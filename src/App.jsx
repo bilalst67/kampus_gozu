@@ -3,7 +3,7 @@ import './App.css'
 function App() {
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Kampüs Radarı 📍</h1>
+      <h1>Kampüs Gözü 📍</h1>
       <p>Burası proje ana merkezimiz olacak.</p>
       
       {/* İleride haritamız buraya gelecek */}
