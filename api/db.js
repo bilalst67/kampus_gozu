@@ -31,5 +31,19 @@ async function executeQuery(query, params = []) {
         throw err;
     }
 }
+/* Yukardaki fonksiyondaki paramsı böyle tanımlicaksın.
+const parametreler = [
+    { 
+        name: 'AdParametresi',  // SQL'deki @AdParametresi ile eşleşir
+        type: sql.NVarChar,     // Tipi String (Metin) olsun dedik
+        value: 'Bilal'          // Gerçek değer
+    },
+    { 
+        name: 'SoyadParametresi', 
+        type: sql.NVarChar, 
+        value: 'Sarıtaş' 
+    }
+];
+*/
 
 module.exports = executeQuery;
