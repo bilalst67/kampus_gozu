@@ -1,1 +1,0 @@
-const dataConnect=require('./db.js')

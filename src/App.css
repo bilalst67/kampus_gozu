@@ -1,0 +1,8 @@
+@keyframes sld_close_css{
+    0%{width: 11%;}
+    100%{width: 1%;}
+}
+@keyframes sld_open_css{
+    0%{width: 1%;}
+    100%{width: 11%;}
+}

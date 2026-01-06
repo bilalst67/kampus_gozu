@@ -1,129 +1,157 @@
-👁️ Kampüs Gözü (Campus Eye)
+```markdown
+# 👁️ Kampüs Gözü (Campus Eye)
 
-Uludağ University - Digital Issue Reporting & Mapping Platform
+### 🎓 Uludağ University - Digital Issue Reporting & Mapping Platform
 
-Kampüs Gözü is an interactive web application designed for students to report infrastructure problems, environmental issues, or requests (e.g., broken lights, HVAC failures, cleaning needs) directly to university administration. The platform utilizes geolocation to pin exact problem locations on a map.
+**Kampüs Gözü** is an interactive web application designed for students to report infrastructure problems, environmental issues, or requests (e.g., broken lights, HVAC failures, cleaning needs) directly to the university administration.
 
-This project aims to improve campus living standards through digital participation and rapid response mechanisms.
-🚀 Key Features
+The platform utilizes **geolocation** to pin exact problem locations on a map, aiming to improve campus living standards through digital participation and rapid response mechanisms.
 
-    🔒 Institutional Verification: Strict signup policy allowing only users with an @ogr.uludag.edu.tr email address to register.
+---
 
-    📍 Geolocation & Mapping: Issues are reported with precise coordinates (Latitude/Longitude) using Leaflet/Map integration.
+## 🚀 Key Features
 
-    📸 Evidence Based: Users can attach photos and detailed descriptions to their reports.
+* **🔒 Institutional Verification:** Strict signup policy allowing only users with a verified `@ogr.uludag.edu.tr` email address.
+* **📍 Geolocation & Mapping:** Issues are reported with precise coordinates (Latitude/Longitude) using **Leaflet** integration.
+* **📸 Evidence Based:** Users can attach photos and detailed descriptions to their reports.
+* **📋 Status Tracking:** Lifecycle tracking for reported issues: *Pending Approval* ➔ *In Progress* ➔ *Resolved*.
+* **📱 Responsive Design:** Fully accessible via mobile devices, tablets, and desktops.
 
-    📋 Status Tracking: Reported issues are tracked through a lifecycle: "Pending Approval", "In Progress", and "Resolved".
+---
 
-    📱 Responsive Design: Fully accessible via mobile devices and tablets.
+## 🛠️ Tech Stack & Architecture
 
-🛠️ Tech Stack & Architecture
+This project utilizes a **Cloud-Native Architecture**. The frontend is deployed on Vercel, while the backend API and database are hosted on Render.
 
-This project utilizes a Hybrid Cloud Architecture, connecting a cloud-hosted frontend to a local containerized database via secure tunneling.
+### **Frontend (Client)**
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-    Frontend: React.js (Hooks, Context API)
+### **Backend & Security**
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
-    Backend / API: Node.js (Vercel Serverless Functions)
+### **Database**
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-    Database: Microsoft SQL Server 2022 (Running on Docker)
+---
 
-    Networking/Tunneling: Playit.gg (TCP Tunneling for Local-to-Cloud connectivity)
+## 🔄 System Flow
 
-    Hosting: Vercel
+The application follows a standard Client-Server model:
 
-System Flow
+`React Client (Vercel)` ➔ `REST API (Render/Node.js)` ➔ `PostgreSQL Database (Render/Cloud)`
 
-React Client ➔ Vercel API ➔ Playit.gg Tunnel ➔ Local Machine (Port 25565) ➔ Docker Container ➔ MSSQL
-⚙️ Installation & Setup
+---
 
-Follow these steps to run the project locally.
-1. Prerequisites
+## ⚙️ Installation & Setup
 
+Follow these steps to run the project locally for development.
+
+### 1. Prerequisites
 Ensure you have the following installed:
+* Node.js (v18 or higher)
+* Docker & Docker Compose (for local database)
 
-    Node.js (v18 or higher)
-
-    Docker & Docker Compose
-
-2. Clone the Repository
-Bash
-
-git clone https://github.com/bilalst67/kampus-gozu.git
+### 2. Clone the Repository
+```bash
+git clone [https://github.com/bilalst67/kampus-gozu.git](https://github.com/bilalst67/kampus-gozu.git)
 cd kampus-gozu
 npm install
 
-3. Database Setup (Docker)
+```
 
-Start the SQL Server container. We map the container's default port (1433) to 25565 to work with the tunneling setup.
-Bash
+### 3. Database Setup (Docker)
 
-sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrongPassword123!" \
-   -p 25565:1433 --name sql_server \
-   --restart unless-stopped \
-   -d mcr.microsoft.com/mssql/server:2022-latest
+Start the PostgreSQL container for local development.
 
-4. Tunnel Configuration (Playit.gg)
+```bash
+sudo docker run --name kampus_postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=YourStrongPassword123! \
+  -e POSTGRES_DB=KampusDB \
+  -p 5432:5432 \
+  --restart unless-stopped \
+  -d postgres
 
-To allow the Vercel backend to talk to your local database:
+```
 
-    Run the Playit agent: ./playit
+### 4. Environment Variables
 
-    Select "Minecraft Java" tunnel type (this forwards TCP traffic).
+Create a `.env` file in the root directory and configure your credentials.
 
-    Note the Address and Port provided by Playit.
+**For Local Development:**
 
-5. Environment Variables
-
-Create a .env file in the root directory and configure your credentials:
-Kod snippet'i
-
+```ini
 # Database Configuration
-DB_USER=sa
+DB_USER=postgres
 DB_PASSWORD=YourStrongPassword123!
-DB_SERVER=your-tunnel-address.gl.joinmc.link
-DB_PORT=your-tunnel-port
+DB_HOST=localhost
+DB_PORT=5432
 DB_DATABASE=KampusDB
 
-6. Run the App
-Bash
+# Security
+JWT_SECRET=your_super_secret_key
 
+```
+
+*> Note: When deploying to Render, add these variables to the Render Environment settings.*
+
+### 5. Run the App
+
+```bash
+# Start Backend
+cd server
+node server.js
+
+# Start Frontend (in a new terminal)
 npm start
 
-The application will run at http://localhost:3000.
-🗄️ Database Schema
+```
 
-The project uses a Relational Database model.
+The application will run at `http://localhost:3000`.
 
-    Users Table (Kullanicilar): Stores student details with email domain validation.
+---
 
-    Issues Table (Sorunlar): Stores issue details, related user ID, GPS coordinates, and status.
+## 🗄️ Database Schema
 
-Sample SQL Structure:
-SQL
+The project uses a Relational Database model powered by **PostgreSQL**.
 
-CREATE TABLE Sorunlar (
-    SorunID INT PRIMARY KEY IDENTITY(1,1),
-    Baslik NVARCHAR(100),
-    Aciklama NVARCHAR(MAX),
-    Latitude DECIMAL(9, 6),
-    Longitude DECIMAL(9, 6),
-    Durum NVARCHAR(20) DEFAULT 'Pending'
+* **Users Table (kullanicilar):** Stores student details with email domain validation.
+* **Issues Table (sorunlar):** Stores issue details, related user ID, GPS coordinates, and status.
+
+**Sample SQL Structure:**
+
+```sql
+CREATE TABLE sorunlar (
+    sorun_id SERIAL PRIMARY KEY,
+    baslik VARCHAR(100),
+    aciklama TEXT,
+    latitude DECIMAL(9, 6),
+    longitude DECIMAL(9, 6),
+    durum VARCHAR(20) DEFAULT 'Pending'
 );
 
-👤 Author
+```
 
-Bilal Sarış
+---
 
-    GitHub: @bilalst67
+## 👤 Author
 
-    Developed for the Web Project Management Course.
+**Bilal Sarış**
 
-📄 License
+* GitHub: [@bilalst67](https://www.google.com/search?q=https://github.com/bilalst67)
+* *Developed for the Web Project Management Course.*
 
-Copyright 2025 Bilal Sarış
+---
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+## 📄 License
 
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+Copyright 2025 Bilal Sarış.
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Licensed under the Apache License, Version 2.0. See the [LICENSE](http://www.apache.org/licenses/LICENSE-2.0) file for details.
