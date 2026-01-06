@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { Route,Link,Routes } from 'react-router-dom';
+import HomePage from './pages/homepages/HomePage';
+import UsHomePage from './pages/homepages/UsHomePage';
+import Login from './pages/Login';
+import Record from './pages/Record';
 import './App.css'
 
 function App() {
     return(
-        <div style={{padding:'20px'}}>
-            
-            <h1>Kampüs Radarı 📍</h1>
-            <p style={{fontFamily:'arial'}}>Burası proje üssümüz Burda: <br />
-                Popüler sorunlar <br/>
-                Kaç sorun paylaştın <br/>
-                ...
-                </p>
-            {/*Ileride harita buray gelcek*/}
-            <div tsyle={{
-                widht:'80%',
-                height:'400px',
-                bacgroundColor:'#e0e0e0',
-                display:'flex',
-                alignitems:'center',
-                justifyContent:'center',
-            }}>
-                Harita burda gözükecek
-            </div>
+        <div>
+        <Routes>
+            <Route path='/' element={<HomePage/>}/>
+            <Route path='/homePage' element={<UsHomePage/>}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/record' element={<Record/>}/>
+        </Routes>
         </div>
     )
 }
