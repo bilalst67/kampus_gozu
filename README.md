@@ -1,4 +1,3 @@
-```markdown
 # 👁️ Kampüs Gözü (Campus Eye)
 
 ### 🎓 Uludağ University - Digital Issue Reporting & Mapping Platform
