@@ -1,18 +1,20 @@
-import { Route,Link,Routes } from 'react-router-dom';
-import HomePage from './pages/homepages/HomePage';
-import UsHomePage from './pages/homepages/UsHomePage';
+import { Route,Routes } from 'react-router-dom';
+import LoadPage from './pages/LoadPage'
+import HomePage from './pages/LoadPage';
 import Login from './pages/Login';
-import Record from './pages/Record';
+import SignIn from './pages/SignIn';
+import About from './pages/About'
 import './App.css'
 
 function App() {
     return(
         <div>
         <Routes>
-            <Route path='/' element={<HomePage/>}/>
-            <Route path='/homePage' element={<UsHomePage/>}/>
+            <Route path='/' element={<LoadPage/>}/>
+            <Route path='/homePage' element={<HomePage/>}/>
             <Route path='/login' element={<Login/>}/>
-            <Route path='/record' element={<Record/>}/>
+            <Route path='/signin' element={<SignIn/>}/>
+            <Route path='/about' element={<About/>}/>
         </Routes>
         </div>
     )
