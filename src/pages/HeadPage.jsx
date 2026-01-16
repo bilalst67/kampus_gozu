@@ -59,7 +59,6 @@ function HeadPage() {
             return;
         }
 
-        // Rolü state'e ata (Küçük harf duyarlılığı için lowerCase yapabiliriz ama genelde gerekmez)
         if (role) setUserRole(role);
 
         const fetchFeed = async () => {
@@ -135,10 +134,10 @@ function HeadPage() {
                     <h1 className="brand-logo">Kampüs Gözü</h1>
                     <div className="nav-actions">
                         
-                        {/* 3. SADECE ADMIN İSE GÖSTERİLECEK BUTON */}
+                        {/* ADMIN BUTONU */}
                         {userRole === 'admin' && (
                             <Link 
-                                to="/anasayfa/profil/admin" // Admin sayfasına giden rota
+                                to="/anasayfa/profil/admin" 
                                 className="icon-btn admin-btn"
                                 data-tooltip="Yönetim Paneli"
                             >
@@ -195,13 +194,13 @@ function HeadPage() {
 
                         {post.FotografUrl && (
                             <div className="card-media">
-                                {/* DÜZELTME: Resim yolu API URL ile birleşti */}
+                                {/* --- DÜZELTME BURADA YAPILDI (sorun -> post) --- */}
                                 <img 
                                     src={
-                                            sorun.FotografUrl.startsWith('http') 
-                                                ? sorun.FotografUrl  // Eğer link http ile başlıyorsa (Cloudinary), olduğu gibi koy.
-                                                : `${import.meta.env.VITE_API_URL}${sorun.FotografUrl}` // Değilse sunucu adresini ekle.
-                                        }  
+                                        post.FotografUrl.startsWith('http') 
+                                            ? post.FotografUrl 
+                                            : `${import.meta.env.VITE_API_URL}${post.FotografUrl}`
+                                    }  
                                     alt="Sorun" 
                                     loading="lazy"
                                     onError={(e) => e.target.style.display = 'none'}
