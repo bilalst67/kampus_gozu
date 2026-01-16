@@ -1,14 +1,19 @@
 /* Harita Kapsayıcısı */
 .harita-kutusu {
-    width: 60%; /* Masaüstünde ideal genişlik */
+    width: 50%;
     height: 500px;
-    margin: 20px auto;
     
+    /* GÖRSELLİK */
     border-radius: 20px;
     border: 4px solid #14387f;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     
+    /* --- SORUN ÇÖZÜCÜLER --- */
     overflow: hidden;    
+    outline: none;
+    touch-action: none; 
+    overscroll-behavior: contain;
+    margin: 0 auto;
     position: relative;
     z-index: 1;
 }
@@ -16,16 +21,6 @@
 .leaflet-container {
     width: 100%;
     height: 100%;
-    background-color: #e5e5e5;
-    /* Mobilde haritayı kaydırırken sayfanın kaymasını engeller */
-    touch-action: none; 
-}
-
-/* --- MOBİL UYUMLULUK --- */
-@media (max-width: 768px) {
-    .harita-kutusu {
-        width: 95%; /* Mobilde ekrana yayılsın */
-        height: 400px; /* Mobilde biraz daha kısa */
-        border-width: 2px;
-    }
+    background-color: #f0f0f0;
+    touch-action: none; /* Bunu da ekle */
 }

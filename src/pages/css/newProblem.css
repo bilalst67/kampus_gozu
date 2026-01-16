@@ -1,134 +1,184 @@
-/* --- SAYFA ARKAPLANI --- */
-.signinBody { /* HTML'de class ismi buysa değiştirmene gerek yok */
+/* --- GENEL SAYFA YAPISI (Diğer sayfalarla aynı arkaplan) --- */
+.np-body {
     background-image: 
-        linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(20, 56, 127, 0.6) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(20, 56, 127, 0.6) 100%),
         url("../../assets/universite_gorsel.jpeg");
     background-size: cover;
-    background-position: center;
+    background-repeat: no-repeat;
+    background-position: center center;
     background-attachment: fixed;
     
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center; /* Dikey ortalama */
-    padding: 30px 15px; /* Mobilde üst-alt boşluk */
+    align-items: center;
+    padding: 40px 20px; /* Mobilde kenarlardan boşluk */
     
     font-family: 'Times New Roman', Times, serif;
-    box-sizing: border-box;
 }
 
-/* --- SORUN EKLEME KARTI --- */
-.signinCard {
-    background-color: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(15px);
-    
-    padding: 40px;
+/* --- ANA KART --- */
+.np-card {
+    background-color: rgba(255, 255, 255, 0.95); /* Harita olduğu için daha opak beyaz */
+    backdrop-filter: blur(10px);
     width: 100%;
-    max-width: 500px; /* Sorun ekleme formu biraz daha geniş olabilir */
+    max-width: 800px; /* Harita rahat sığsın diye geniş */
     
     border-radius: 20px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
-    border-top: 5px solid #14387f; /* Lacivert (Ciddiyet/Form) */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border-top: 5px solid #edc500; /* Sarı çizgi (Dikkat çeksin) */
     
-    text-align: center;
+    padding: 40px;
     animation: slideUp 0.6s ease-out;
 }
 
-/* --- BAŞLIKLAR --- */
-.signinBaslik {
-    font-size: 2.2rem;
-    color: #14387f;
-    margin: 0 0 10px 0;
-    font-weight: 800;
-}
-
-.signinAltBaslik {
-    font-size: 1rem;
-    color: #666;
+/* --- BAŞLIK ALANI --- */
+.np-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 30px;
-    line-height: 1.5;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
 }
 
-/* --- İNPUTLAR & TEXTAREA --- */
-.input-group {
+.np-header h1 {
+    font-size: 2rem;
+    color:  #edc500;
+    margin: 0;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.back-btn:hover {
+    color: #14387f;
+}
+
+/* --- FORM ELEMANLARI --- */
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1; /* Yan yana eşit dağılsın */
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
-    text-align: left;
 }
 
-.input-label { /* Eğer label kullanırsan diye */
-    display: block;
-    margin-bottom: 8px;
+.form-group label {
+    font-size: 1rem;
     font-weight: bold;
     color: #333;
-    font-size: 0.9rem;
+    margin-bottom: 8px;
 }
 
-.signinInput {
+/* Input ve Textarea Ortak Stilleri */
+.np-input, .np-textarea {
     width: 100%;
-    padding: 15px;
-    box-sizing: border-box;
-    
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    background-color: #fcfcfc;
+    background-color: #f9f9f9;
     font-size: 1rem;
-    font-family: inherit; /* Textarea için fontu korur */
-    resize: vertical; /* Textarea dikey büyüyebilsin */
+    outline: none;
     transition: all 0.3s;
+    font-family: inherit; /* Times New Roman'ı koru */
+    box-sizing: border-box;
 }
 
-/* Textarea için özel yükseklik */
-textarea.signinInput {
-    min-height: 120px; 
+.np-textarea {
+    resize: vertical; /* Sadece dikey uzasın */
+    min-height: 100px;
 }
 
-.signinInput:focus {
+.np-input:focus, .np-textarea:focus {
     border-color: #14387f;
     background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(20, 56, 127, 0.15);
+    box-shadow: 0 0 8px rgba(20, 56, 127, 0.1);
 }
 
-/* --- BUTON (Eylem Odaklı) --- */
-.signinButton {
-    width: 100%;
-    padding: 16px;
-    margin-top: 15px;
-    
-    background: #edc500; /* Dikkat çekici buton */
-    color: #14387f; /* Yazı lacivert olsun (kontrast) */
-    
+/* --- HARİTA ALANI --- */
+.map-section {
+    margin-bottom: 25px;
+}
+
+.section-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
     font-size: 1.1rem;
-    font-weight: 800;
+}
+
+.status-ok { color: #28a745; }
+.status-wait { color: #dc3545; }
+
+.map-wrapper {
+    height: 350px;
+    border-radius: 15px;
+    overflow: hidden; /* Harita taşmasın */
+    border: 3px solid #ddd;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* --- DOSYA YÜKLEME --- */
+.file-input {
+    padding: 10px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* --- BUTON --- */
+.np-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #14387f;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(20, 56, 127, 0.3);
 }
 
-.signinButton:hover {
-    background-color: #d4b000;
+.np-button:hover {
+    background-color: #edc500; /* Hoverda sarı olsun */
+    color: #14387f; /* Yazı laciverte dönsün */
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-/* --- İPTAL / GERİ DÖN BUTONU (Opsiyonel) --- */
-.cancel-btn {
-    display: inline-block;
-    margin-top: 20px;
-    color: #777;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: bold;
-}
-.cancel-btn:hover { color: #d9534f; }
-
-/* --- MOBİL UYUMLULUK --- */
-@media (max-width: 480px) {
-    .signinCard { padding: 25px 20px; }
-    .signinBaslik { font-size: 1.8rem; }
+/* --- RESPONSIVE (MOBİL İÇİN) --- */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column; /* Yan yana olanları alt alta al */
+        gap: 0;
+    }
+    .np-card {
+        padding: 20px;
+    }
+    .np-header h1 {
+        font-size: 1.5rem;
+    }
 }
 
+/* --- GİRİŞ ANİMASYONU --- */
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
