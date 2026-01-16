@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const problemController = require('../controllers/problemcontroller')
+const problemController = require('../controllers/problemController')
 const userController = require('../controllers/userController');
-const verifyToken = require("../security/authmiddleware");
+const verifyToken = require("../security/authMiddleware");
 const verifyAdmin = require("../security/adminMiddleware");
 const upload = require('../security/upload');
 
