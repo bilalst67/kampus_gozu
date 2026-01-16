@@ -26,7 +26,6 @@ function Login() {
             const data = await response.json() 
 
             if (response.ok) {
-                // showToast("Giriş başarılı: " + data.message) // Kullanıcıyı yormayalım, direkt geçiş yapalım
                 localStorage.setItem("token", data.token)
                 localStorage.setItem("userRole", data.user.Rol) 
                 navigate("/anasayfa")

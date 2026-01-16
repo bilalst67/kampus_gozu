@@ -197,7 +197,11 @@ function HeadPage() {
                             <div className="card-media">
                                 {/* DÜZELTME: Resim yolu API URL ile birleşti */}
                                 <img 
-                                    src={`../../server${post.FotografUrl}`} 
+                                    src={
+                                            sorun.FotografUrl.startsWith('http') 
+                                                ? sorun.FotografUrl  // Eğer link http ile başlıyorsa (Cloudinary), olduğu gibi koy.
+                                                : `${import.meta.env.VITE_API_URL}${sorun.FotografUrl}` // Değilse sunucu adresini ekle.
+                                        }  
                                     alt="Sorun" 
                                     loading="lazy"
                                     onError={(e) => e.target.style.display = 'none'}

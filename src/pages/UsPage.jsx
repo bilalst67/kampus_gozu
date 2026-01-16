@@ -162,7 +162,14 @@ function UsPage() {
                             <span className="role-badge">{kullaniciRol}</span>
                         </div>
                     </div>
+                    
                     <div className="header-right">
+                        {/* Ana Sayfa Butonu */}
+                        <Link to="/anasayfa" className="home-action-btn">
+                            🏠 Ana Sayfa
+                        </Link>
+
+                        {/* Çıkış Yap Butonu */}
                         <button onClick={handleLogout} className="logout-action-btn" title="Çıkış Yap">
                             Çıkış Yap 🚪
                         </button>
@@ -184,7 +191,7 @@ function UsPage() {
                             {userData.map((kayit) => (
                                 kayit.SorunID && (
                                     <div key={kayit.SorunID} className="problem-card">
-                                        
+                                    
                                         <div className="pc-image-wrapper">
                                             {kayit.FotografUrl ? (
                                                 <img

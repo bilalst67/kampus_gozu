@@ -8,84 +8,116 @@ function SignIn() {
     const [newUser, setNewUser] = useState({ AdSoyad: "", Email: "", Sifre: "" })
     const [errors, setErrors] = useState({})
 
+    // --- TEKİL ALAN DOĞRULAMA FONKSİYONU ---
+    // Bu fonksiyon sadece kendisine gönderilen alanı (name) kontrol eder ve hata mesajı döndürür.
+    const checkValidation = (name, value) => {
+        let error = "";
+        const cleanValue = value ? value.trim() : "";
+
+        // Regex Tanımları
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*.?])/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        switch (name) {
+            case "AdSoyad":
+                if (!cleanValue) error = "Ad Soyad alanı boş bırakılamaz.";
+                else if (cleanValue.length < 3) error = "Ad Soyad en az 3 karakter olmalıdır.";
+                else if (cleanValue.length > 50) error = "Ad Soyad çok uzun.";
+                break;
+
+            case "Email":
+                if (!cleanValue) {
+                    error = "E-posta alanı boş bırakılamaz.";
+                } else if (cleanValue.length > 100) {
+                    error = "E-posta çok uzun.";
+                } else if (!emailRegex.test(cleanValue)) {
+                    error = "Lütfen geçerli bir e-posta adresi giriniz.";
+                } else {
+                    const parts = cleanValue.split('@');
+                    if (parts.length === 2) {
+                        const domain = parts[1].toLowerCase();
+                        const allowedDomains = ['uludag.edu.tr', 'ogr.uludag.edu.tr', 'gmail.com'];
+                        
+                        if (domain.indexOf('.') === -1) {
+                            error = "E-posta uzantısı eksik.";
+                        } else if (!allowedDomains.includes(domain)) {
+                            error = "Sadece üniversite veya Gmail adresi kabul edilmektedir.";
+                        } else if (domain.includes('tempmail') || domain.includes('10minutemail')) {
+                            error = "Geçici mail adresleri yasaktır.";
+                        }
+                    }
+                }
+                break;
+
+            case "Sifre":
+                if (!value) {
+                    error = "Şifre alanı boş bırakılamaz.";
+                } else if (value.length < 8) {
+                    error = "Şifre en az 8 karakter olmalıdır.";
+                } else if (value.length > 30) {
+                    error = "Şifre çok uzun.";
+                } else if (!passwordRegex.test(value)) {
+                    let missing = [];
+                    if (!/(?=.*[A-Z])/.test(value)) missing.push("1 Büyük Harf");
+                    if (!/(?=.*[a-z])/.test(value)) missing.push("1 Küçük Harf");
+                    if (!/(?=.*[0-9])/.test(value)) missing.push("1 Rakam");
+                    if (!/(?=.*[!@#\$%\^&\*.?])/.test(value)) missing.push("1 Sembol (!@#$%.?)");
+                    
+                    error = `Eksikleriniz var: ${missing.join(", ")}`;
+                }
+                break;
+                
+            default:
+                break;
+        }
+
+        return error;
+    };
+
+    // Input değiştiğinde (Hata varsa siler, kullanıcı düzeltiyor demektir)
     const handleChange = (e) => {
-        setNewUser({
-            ...newUser,
-            [e.target.name]: e.target.value
-        });
-        // Kullanıcı yazmaya başladığında hatayı silebiliriz (İsteğe bağlı)
-        if (errors[e.target.name]) {
-            setErrors({ ...errors, [e.target.name]: null });
+        const { name, value } = e.target;
+        setNewUser({ ...newUser, [name]: value });
+
+        // Kullanıcı yazmaya başladığında hatayı kaldıralım ki rahatsız etmesin
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: null });
         }
     };
 
-    const validateForm = () => {
-        const newErrors = {};
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        const errorMsg = checkValidation(name, value);
         
-        // Regex tanımları
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*.])/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Hata varsa state'e ekle, yoksa temizle
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: errorMsg
+        }));
+    };
 
-        // --- AD SOYAD KONTROLÜ ---
-        const cleanAdSoyad = newUser.AdSoyad ? newUser.AdSoyad.trim() : "";
-        if (!cleanAdSoyad) {
-            newErrors.AdSoyad = "Ad Soyad alanı boş bırakılamaz";
-        } else if (cleanAdSoyad.length < 3) {
-            newErrors.AdSoyad = "Ad Soyad en az 3 karakter olmalıdır";
-        } else if (cleanAdSoyad.length > 50) {
-            newErrors.AdSoyad = "Ad Soyad en fazla 50 karakter olabilir";
-        }
+    // Form Gönderilirken (Tüm alanları kontrol et)
+    const validateFormOnSubmit = () => {
+        const newErrors = {};
+        let isValid = true;
 
-        // --- EMAIL KONTROLÜ (GÜNCELLENDİ) ---
-        const cleanEmail = newUser.Email ? newUser.Email.trim() : "";
-
-        if (!cleanEmail) {
-            newErrors.Email = "E-posta alanı boş bırakılamaz";
-        } else if (cleanEmail.length > 100) {
-            newErrors.Email = "E-posta en fazla 100 karakter olabilir";
-        } else if (!emailRegex.test(cleanEmail)) {
-            newErrors.Email = "Lütfen geçerli bir e-posta adresi giriniz";
-        } else {
-            // EĞER FORMAT GEÇERLİYSE, @ SONRASINI DETAYLI KONTROL ET
-            const parts = cleanEmail.split('@'); // @ işaretinden ikiye böl
-            if (parts.length === 2) {
-                const domain = parts[1].toLowerCase(); // @'den sonraki kısım (örn: gmail.com)
-                // SENARYO 1: Uzantı kontrolü (Nokta var mı ve en az 2 harf mi?)
-                if (domain.indexOf('.') === -1) {
-                    newErrors.Email = "E-posta adresinin uzantısı (örn: .com) eksik!";
-                }
-                // SENARYO 2: (İsteğe Bağlı) Sadece Kurumsal/Üniversite maili olsun istersen:
-                const allowedDomains = ['uludag.edu.tr', 'ogr.uludag.edu.tr', 'gmail.com'];
-                if (!allowedDomains.includes(domain)) {
-                     newErrors.Email = "Sadece üniversite veya Gmail adresi ile kayıt olabilirsiniz!";
-                }
-                // SENARYO 3: (İsteğe Bağlı) Geçici mailleri engellemek istersen:
-                if (domain.includes('tempmail') || domain.includes('10minutemail')) {
-                    newErrors.Email = "Geçici mail adresleri kabul edilmemektedir.";
-                }
-                
+        // Tüm alanları tek tek kontrol et
+        Object.keys(newUser).forEach(key => {
+            const error = checkValidation(key, newUser[key]);
+            if (error) {
+                newErrors[key] = error;
+                isValid = false;
             }
-        }
-
-        // --- ŞİFRE KONTROLÜ ---
-        if (!newUser.Sifre) {
-            newErrors.Sifre = "Şifre alanı boş bırakılamaz";
-        } else if (newUser.Sifre.length < 8) {
-            newErrors.Sifre = "Şifre en az 8 karakter olmalıdır";
-        } else if (newUser.Sifre.length > 30) {
-            newErrors.Sifre = "Şifre en fazla 30 karakter olabilir";
-        } else if (!passwordRegex.test(newUser.Sifre)) {
-            newErrors.Sifre = "Şifre en az 1 büyük harf, 1 küçük harf, 1 rakam ve 1 özel karakter (!@#$%.) içermelidir";
-        }
+        });
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return isValid;
     };
 
     const sigin = async (e) => {
         e.preventDefault();
         
-        if (!validateForm()) return;
+        if (!validateFormOnSubmit()) return;
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/newuser`, {
@@ -97,14 +129,14 @@ function SignIn() {
             const result = await response.json();
 
             if (response.ok) {
-                showToast("Hoş geldiniz, şimdi giriş yapabilirsiniz.");
+                showToast("Hoş geldiniz, şimdi giriş yapabilirsiniz.", 'success');
                 navigate("/login"); 
             } else {
-                showToast("Hata: " + (result.message || "Kayıt başarısız.",'error'));
+                showToast("Hata: " + (result.message || "Kayıt başarısız."), 'error');
             }
         } catch (error) {
             console.log(error);
-            showToast("Sunucu bağlantı hatası!",'error');
+            showToast("Sunucu bağlantı hatası!", 'error');
         }
     }
 
@@ -125,8 +157,9 @@ function SignIn() {
                             placeholder="Adınız Soyadınız"
                             value={newUser.AdSoyad}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                         />
-                        {errors.AdSoyad && <small className="error-text">{errors.AdSoyad}</small>}
+                        {errors.AdSoyad && <small className="error-text">⚠️ {errors.AdSoyad}</small>}
                     </div>
 
                     {/* Email */}
@@ -138,8 +171,9 @@ function SignIn() {
                             placeholder="Email Adresiniz"
                             value={newUser.Email}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                         />
-                        {errors.Email && <small className="error-text">{errors.Email}</small>}
+                        {errors.Email && <small className="error-text">⚠️ {errors.Email}</small>}
                     </div>
 
                     {/* Şifre */}
@@ -148,11 +182,12 @@ function SignIn() {
                             className={`signinInput ${errors.Sifre ? 'input-error' : ''}`}
                             type="password"
                             name="Sifre"
-                            placeholder="Şifreniz (En az 6 karakter)"
+                            placeholder="Şifreniz"
                             value={newUser.Sifre}
                             onChange={handleChange}
+                            onBlur={handleBlur}
                         />
-                        {errors.Sifre && <small className="error-text">{errors.Sifre}</small>}
+                        {errors.Sifre && <small className="error-text" style={{color: '#dc3545'}}>⚠️ {errors.Sifre}</small>}
                     </div>
 
                     <button type='submit' className='signinButton'>KAYIT OL</button>

@@ -9,7 +9,6 @@ function AdminPage() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("pending");
     
-    // Hangi satırların açık olduğunu tutan state (ID'ye göre true/false)
     const [expandedRows, setExpandedRows] = useState({});
 
     const navigate = useNavigate();
@@ -184,7 +183,11 @@ function AdminPage() {
                                             <td>
                                                 {sorun.FotografUrl ? (
                                                     <img 
-                                                        src={`../../server/${sorun.FotografUrl}`} 
+                                                        src={
+                                                                sorun.FotografUrl.startsWith('http') 
+                                                                    ? sorun.FotografUrl  // Eğer link http ile başlıyorsa (Cloudinary), olduğu gibi koy.
+                                                                    : `${import.meta.env.VITE_API_URL}${sorun.FotografUrl}` // Değilse sunucu adresini ekle.
+                                                            }
                                                         alt="thumb" 
                                                         className="table-img"
                                                     />
