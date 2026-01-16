@@ -1,33 +1,35 @@
-/* --- GENEL AYARLAR (Login ile Aynı) --- */
+/* --- GENEL YAPISI --- */
 .signinBody {
     background-image: 
-        linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(20, 56, 127, 0.6) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(20, 56, 127, 0.6) 100%),
         url("../../assets/universite_gorsel.jpeg");
     background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+    background-position: center;
     background-attachment: fixed;
     
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
     
     font-family: 'Times New Roman', Times, serif;
-    overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* --- KAYIT KARTI (Glassmorphism) --- */
+/* --- KAYIT KARTI --- */
 .signinCard {
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 50px 40px;
+    background-color: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    padding: 40px 30px;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px; /* Kayıt formu biraz daha geniş olabilir */
     
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    border-top: 5px solid #edc500; /* Kayıt sayfasında sarı çizgi olsun (Farklılık için) */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    border-top: 5px solid #edc500; /* Ayırt edici SARI çizgi */
     
     text-align: center;
     animation: fadeIn 0.8s ease-out;
@@ -35,32 +37,31 @@
 
 /* --- BAŞLIKLAR --- */
 .signinBaslik {
-    font-size: 2.5rem;
-    color: #bd9d00;
+    font-size: 2.4rem;
+    color: #bfa300; /* Biraz daha koyu sarı, beyaz üstünde okunması için */
     margin: 0;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-weight: 800;
 }
 
 .signinAltBaslik {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #555;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 /* --- İNPUTLAR --- */
 .input-group {
-    margin-bottom: 20px;
-    text-align: left; /* Hata mesajları solda dursun */
+    margin-bottom: 18px;
+    text-align: left;
 }
 
 .signinInput {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     box-sizing: border-box;
     
-    border: 2px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     background-color: #f9f9f9;
     font-size: 1rem;
     outline: none;
@@ -68,15 +69,15 @@
 }
 
 .signinInput:focus {
-    border-color: #bfa300;
+    border-color: #edc500;
     background-color: #fff;
-    box-shadow: 0 0 8px rgba(20, 56, 127, 0.2);
+    box-shadow: 0 0 0 4px rgba(237, 197, 0, 0.2); /* Sarı halka */
 }
 
-/* Hata durumunda input rengi */
+/* Hata Durumları */
 .input-error {
-    border-color: #d9534f;
-    background-color: #fff0f0;
+    border-color: #d9534f !important;
+    background-color: #fff5f5 !important;
 }
 
 .error-text {
@@ -85,6 +86,7 @@
     margin-top: 5px;
     display: block;
     margin-left: 5px;
+    font-weight: bold;
 }
 
 /* --- BUTON --- */
@@ -93,53 +95,45 @@
     padding: 15px;
     margin-top: 10px;
     
-    background-color: #edc500;
+    background: linear-gradient(135deg, #edc500 0%, #d4b000 100%);
     color: white;
     font-size: 1.1rem;
     font-weight: bold;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .signinButton:hover {
-    background-color: #bfa300;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(20, 56, 127, 0.4);
+    box-shadow: 0 8px 20px rgba(237, 197, 0, 0.4);
 }
 
-/* --- ALT KISIM (Giriş Yap) --- */
+.signinButton:active { transform: scale(0.98); }
+
+/* --- ALT KISIM --- */
 .signinFooter {
     margin-top: 25px;
-    font-size: 1rem;
-    color: #333;
-}
-
-.signinRegText {
-    margin-right: 5px;
+    font-size: 0.95rem;
+    color: #444;
 }
 
 .signinLink {
     color: #edc500;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s;
+}
+.signinLink:hover { color: #bfa300; text-decoration: underline; }
+
+/* --- MOBİL UYUMLULUK --- */
+@media (max-width: 480px) {
+    .signinCard { padding: 30px 20px; }
+    .signinBaslik { font-size: 2rem; }
 }
 
-.signinLink:hover {
-    color: #bfa300;
-    text-decoration: underline;
-}
-
-/* --- GİRİŞ ANİMASYONU --- */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
