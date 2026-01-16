@@ -41,9 +41,8 @@
 .tab-btn:hover { border-color: #d1d9e6; color: #333; }
 .tab-btn.active { background: #14387f; border-color: #14387f; color: white; box-shadow: 0 4px 12px rgba(20, 56, 127, 0.3); }
 
-/* Tablo */
+/* Tablo Genel Ayarları */
 .table-wrapper {
-    overflow-x: auto;
     border-radius: 16px;
     border: 1px solid #eee;
     background: white;
@@ -51,14 +50,17 @@
 
 .admin-table {
     width: 100%;
-    min-width: 850px;
     border-collapse: collapse;
 }
 
+/* Masaüstü Görünümü İçin Başlıklar */
 .admin-table th { background: #f8f9fa; color: #444; font-weight: 700; padding: 18px; text-align: left; font-size: 0.95rem; }
 .admin-table td { padding: 18px; border-bottom: 1px solid #f1f1f1; vertical-align: middle; color: #333; }
-/* Satır hover efekti */
-.admin-table tr:hover { background-color: #fcfcfc; }
+
+/* Satır hover efekti (Sadece masaüstünde) */
+@media (min-width: 769px) {
+    .admin-table tr:not(.detail-row):hover { background-color: #fcfcfc; }
+}
 
 .table-img { width: 55px; height: 55px; object-fit: cover; border-radius: 10px; border: 1px solid #eee; }
 .sub-text { font-size: 0.85rem; color: #888; display: block; margin-top: 5px; font-weight: 500;}
@@ -78,7 +80,7 @@
 .btn-solve { background: #039be5; }
 .btn-reject { background: #ef5350; }
 
-/* Accordion */
+/* Accordion Butonu */
 .btn-toggle-row { background: #f1f3f5; border: none; cursor: pointer; font-size: 0.8rem; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; color: #555;}
 .btn-toggle-row:hover { background: #e9ecef; color: #14387f; }
 .btn-toggle-row.open { transform: rotate(90deg); background: #e3f2fd; color: #1976d2; }
@@ -91,12 +93,131 @@
 .meta-info { gap: 15px; }
 .meta-info span { background: white; padding: 8px 15px; border-radius: 8px; border: 1px solid #eee; font-size: 0.9rem; color: #555; }
 
-/* MOBİL */
-@media (max-width: 600px) {
+/* ---------------------------------------------------- */
+/* --- MOBİL İÇİN KART GÖRÜNÜMÜ (Responsive Table) --- */
+/* ---------------------------------------------------- */
+@media (max-width: 768px) {
     .admin-body { padding: 15px; }
+    .admin-container { padding: 20px; border-radius: 16px; }
     .admin-header { flex-direction: column; align-items: flex-start; gap: 15px; }
     .header-actions { width: 100%; justify-content: space-between; }
-    .admin-container { padding: 20px; }
+    
+    /* Tabloyu Blok Yapısına Çevir */
+    .admin-table, .admin-table tbody, .admin-table tr, .admin-table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Tablo Başlıklarını Gizle (Mobilde gerek yok) */
+    .admin-table thead { display: none; }
+
+    /* Ana Satır (Kart) Tasarımı */
+    .admin-table tr:not(.detail-row) {
+        background: #fff;
+        margin-bottom: 20px;
+        border-radius: 16px;
+        border: 1px solid #eef2f6;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 0;
+        overflow: hidden;
+    }
+
+    /* Hücreleri Düzenle */
+    .admin-table td {
+        text-align: left;
+        padding: 12px 20px;
+        border-bottom: 1px solid #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap; /* İçerik sığmazsa aşağı insin */
+    }
+    
+    /* Hücreler arası çizgiyi son elemanda kaldır */
+    .admin-table td:last-child { border-bottom: none; }
+
+    /* 1. Hücre: Detay Butonu ve ID */
+    .admin-table td:nth-child(1) {
+        background-color: #f8f9fa;
+        padding: 10px 20px;
+        justify-content: flex-start;
+        gap: 15px;
+        font-weight: bold;
+        color: #14387f;
+    }
+    
+    /* 2. Hücre: Görsel (Ortala ve Büyüt) */
+    .admin-table td:nth-child(2) {
+        justify-content: center;
+        padding: 20px;
+    }
+    .table-img { width: 100%; max-width: 300px; height: 180px; border-radius: 12px; }
+    
+    /* 3. Hücre: Başlık ve Konum */
+    .admin-table td:nth-child(3) {
+        display: block; /* Alt alta olsun */
+        text-align: center;
+    }
+    .admin-table td:nth-child(3) strong {
+        font-size: 1.1rem;
+        color: #14387f;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* 4. Hücre: Kullanıcı Bilgisi */
+    .admin-table td:nth-child(4) {
+        justify-content: center;
+        text-align: center;
+        background: #fdfdfd;
+        color: #555;
+    }
+
+    /* 5. Hücre: Durum */
+    .admin-table td:nth-child(5) {
+        justify-content: center;
+    }
+    .status-pill { font-size: 0.9rem; padding: 8px 16px; }
+
+    /* 6. Hücre: Butonlar */
+    .admin-table td:nth-child(6) {
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .action-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+    }
+    .action-buttons button {
+        flex: 1; /* Butonlar eşit genişlikte yayılsın */
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    /* --- DETAY SATIRI (ACCORDION) --- */
+    /* Detay satırı açıldığında kartın hemen altına yapışık dursun */
+    .admin-table tr.detail-row {
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        margin-top: -15px; /* Üstteki kartla birleşsin */
+        margin-bottom: 25px;
+    }
+    
+    .detail-row td {
+        background: white;
+        border-radius: 0 0 16px 16px; /* Sadece alt köşeler yuvarlak */
+        border: 1px solid #eef2f6;
+        border-top: none; /* Üst çizgi yok, bütünlük sağlar */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+        display: block; /* İçerik rahat yayılsın */
+    }
+    
+    .detail-content { padding: 15px; }
+    .meta-info { flex-direction: column; gap: 10px; }
+    .meta-info span { width: 100%; text-align: center; box-sizing: border-box; }
 }
 
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
