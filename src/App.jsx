@@ -1,23 +1,29 @@
-import { Route,Routes } from 'react-router-dom';
-import LoadPage from './pages/LoadPage'
-import HeadPage from './pages/HeadPage';
+import { Routes, Route, Link } from 'react-router-dom';
+import UsPage from './pages/UsPage';
+import LoadPage from './pages/LoadPage';
+import UserForm from './pages/UserForm';
 import Login from './pages/Login';
+import About from './pages/About';
 import SignIn from './pages/SignIn';
-import About from './pages/About'
-import './App.css'
+import NewProblem from './pages/NewProblem';
+import HeadPage from './pages/HeadPage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
-    return(
-        <div>
+  return (
+    <div className="App">
         <Routes>
-            <Route path='/' element={<LoadPage/>}/>
-            <Route path='/homePage' element={<HeadPage/>}/>
-            <Route path='/login' element={<Login/>}/>
-            <Route path='/signin' element={<SignIn/>}/>
-            <Route path='/about' element={<About/>}/>
+            <Route path='/' element={<LoadPage />}/>
+            <Route path='/login' element={<Login />}/>
+            <Route path='/anasayfa' element={<HeadPage />}/>
+            <Route path="/anasayfa/profil" element={<UsPage />} />
+            <Route path='/anasayfa/profil/yenisorun' element={<NewProblem />}/>
+            <Route path='/anasayfa/profil/admin' element={<AdminPage/>}/>
+            <Route path="/about" element={<About />} />
+            <Route path='/signin'element={<SignIn />}/>
         </Routes>
-        </div>
-    )
+    </div>
+  );
 }
 
 export default App;
