@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const problemController = require('../controllers/problemController')
-const userController = require('../controllers/userController');
-const verifyToken = require("../security/authMiddleware");
-const verifyAdmin = require("../security/adminMiddleware");
+const userController = require('../controllers/usController');
+const verifyToken = require("../security/authsecurity");
+const verifyAdmin = require("../security/adminsecurity");
 const upload = require('../security/upload');
 
 // Public Rotalar (Herkes Erişebilir)
