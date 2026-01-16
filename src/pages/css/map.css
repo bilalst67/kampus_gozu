@@ -1,23 +1,12 @@
-/* Harita Kapsayıcısı */
 .harita-kutusu {
-    width: 100%; /* Mobilde ve kart içinde tam genişlik */
-    height: 100%; /* Parent elemente göre yükseklik */
+    width: 100%; 
+    height: 100%; 
     min-height: 350px;
-    
-    border-radius: 16px; /* Soft köşe */
-    /* Gölge yok çünkü parent element (wrapper) gölgeye sahip */
-    
+    border-radius: 16px;
     overflow: hidden;    
     outline: none;
     touch-action: none; 
     position: relative;
     z-index: 1;
 }
-
-.leaflet-container {
-    width: 100%;
-    height: 100%;
-    background-color: #e5e5e5;
-    touch-action: none;
-    font-family: 'Segoe UI', sans-serif;
-}
+.leaflet-container { width: 100%; height: 100%; font-family: 'Segoe UI', sans-serif; }

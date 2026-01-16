@@ -7,20 +7,20 @@
     background-attachment: fixed;
     min-height: 100vh;
     font-family: 'Segoe UI', 'Roboto', sans-serif;
-    padding: 20px 15px;
+    padding: 30px 15px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
 }
 
 .profile-container {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(15px);
+    background-color: #ffffff; /* Tam beyaz kart */
     width: 100%;
     max-width: 1000px;
     border-radius: 24px;
-    padding: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    padding: 35px;
+    /* Yüzen efekt */
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
 }
 
 /* --- HEADER --- */
@@ -29,8 +29,8 @@
     justify-content: space-between;
     align-items: center;
     padding-bottom: 25px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 35px;
     gap: 20px;
 }
 
@@ -41,129 +41,139 @@
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     background: #14387f;
     color: white;
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 3rem;
+    font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 5px 15px rgba(20, 56, 127, 0.3);
+    box-shadow: 0 8px 20px rgba(20, 56, 127, 0.3);
+    border: 4px solid #fff; /* Avatar etrafına beyaz çerçeve */
 }
 
-.profile-info h2 { margin: 0; color: #333; font-size: 1.5rem; }
+.profile-info h2 { margin: 0; color: #111; font-size: 1.8rem; font-weight: 800; }
 
 .role-badge {
-    background: #edc500;
-    color: #14387f;
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: bold;
+    background: #fff8e1;
+    color: #f57c00;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
     display: inline-block;
-    margin-top: 5px;
+    margin-top: 8px;
+    border: 1px solid #ffe0b2;
 }
 
-/* Header Sağ Butonlar */
-.header-right { display: flex; gap: 10px; }
+/* Sağ Butonlar */
+.header-right { display: flex; gap: 12px; }
 
 .home-action-btn, .logout-action-btn {
     text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 10px;
+    padding: 12px 20px;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.2s;
     border: none;
     display: flex;
     align-items: center;
     gap: 8px;
     font-family: inherit;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .home-action-btn { background: #007bff; color: white; }
-.home-action-btn:hover { background: #0056b3; }
+.home-action-btn:hover { background: #0069d9; transform: translateY(-2px); }
 
-.logout-action-btn { background: #dc3545; color: white; }
-.logout-action-btn:hover { background: #c82333; }
+.logout-action-btn { background: #fff5f5; color: #dc3545; border: 1px solid #dc3545; }
+.logout-action-btn:hover { background: #dc3545; color: white; transform: translateY(-2px); }
 
-/* --- GRID YAPISI (Responsive) --- */
+/* --- GRID YAPISI --- */
 .problems-grid {
     display: grid;
-    /* Mobilde 1 sütun, geniş ekranda sığdığı kadar */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 25px;
+    gap: 30px;
 }
 
 /* --- KART --- */
 .problem-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+    /* Kartın profilden ayrışması için güçlü gölge */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     transition: transform 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid #eee;
 }
 
 .problem-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .pc-image-wrapper {
-    height: 180px;
-    background: #f4f4f4;
+    height: 200px;
+    background: #f8f9fa;
     position: relative;
 }
 .pc-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-.no-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; }
+.no-image-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa; background: #eee; }
 
 .pc-badge {
     position: absolute;
-    top: 10px; right: 10px;
-    padding: 5px 10px;
+    top: 15px; right: 15px;
+    padding: 6px 12px;
     border-radius: 12px;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 800;
     color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    text-transform: uppercase;
 }
-.pc-badge.waiting { background: #ff9800; }
-.pc-badge.solved { background: #4caf50; }
+.pc-badge.waiting { background: #fb8c00; }
+.pc-badge.solved { background: #43a047; }
 
-.pc-content { padding: 20px; }
-.pc-title { margin: 0 0 10px 0; font-size: 1.1rem; color: #14387f; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-.pc-desc { font-size: 0.9rem; color: #555; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em; margin-bottom: 15px; }
+.pc-content { padding: 25px; }
+.pc-title { margin: 0 0 10px 0; font-size: 1.2rem; color: #14387f; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.pc-desc { font-size: 0.95rem; color: #555; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 3em; margin-bottom: 20px; line-height: 1.5; }
 
 .pc-footer {
     display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid #f0f0f0; padding-top: 15px;
+    border-top: 1px solid #f0f0f0; padding-top: 20px;
 }
 
+.pc-date { color: #999; font-size: 0.85rem; font-weight: 500; }
+
 .pc-delete-btn {
-    background: #fff5f5; color: #dc3545; border: 1px solid #dc3545;
-    padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+    background: white; color: #dc3545; border: 1px solid #f5c6cb;
+    padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
 }
-.pc-delete-btn:hover { background: #dc3545; color: white; }
+.pc-delete-btn:hover { background: #dc3545; color: white; border-color: #dc3545; }
 
 /* Başlık */
 .section-title {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
 }
-.add-new-btn {
-    background: #14387f; color: white; text-decoration: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
-}
+.section-title h3 { font-size: 1.5rem; color: #14387f; font-weight: 800; }
 
-/* MOBİL DÜZENLEMELER */
+.add-new-btn {
+    background: #14387f; color: white; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; box-shadow: 0 5px 15px rgba(20, 56, 127, 0.2);
+}
+.add-new-btn:hover { transform: translateY(-2px); background: #0f2b63; }
+
+/* MOBİL */
 @media (max-width: 600px) {
+    .profile-container { padding: 20px; }
     .profile-header { flex-direction: column; text-align: center; }
     .header-left { flex-direction: column; }
     .header-right { width: 100%; justify-content: center; flex-wrap: wrap; }
-    .section-title { flex-direction: column; align-items: stretch; gap: 10px; }
+    .section-title { flex-direction: column; align-items: stretch; gap: 15px; }
     .add-new-btn { text-align: center; }
-    .problems-grid { grid-template-columns: 1fr; } /* Tamamen tek sütun */
+    .problems-grid { grid-template-columns: 1fr; } 
 }

@@ -1,6 +1,6 @@
 /* --- GENEL --- */
 .feed-container {
-    background-color: #f0f2f5; /* Modern gri zemin */
+    background-color: #eef2f6; /* BEYAZ DEĞİL, yumuşak gri-mavi zemin */
     min-height: 100vh;
     font-family: 'Segoe UI', 'Helvetica Neue', sans-serif; 
 }
@@ -15,11 +15,11 @@
     max-width: 600px;
     height: 65px;
     
-    background: rgba(20, 56, 127, 0.9);
+    background: rgba(20, 56, 127, 0.95); /* Daha opak lacivert */
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Daha güçlü gölge */
     z-index: 1000;
     
     display: flex;
@@ -36,7 +36,8 @@
     transform: none;
     border-radius: 30px;
     padding: 0 10px;
-    background: rgba(20, 56, 127, 0.95);
+    background: #14387f; /* Tam renk */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
 .nav-content {
@@ -56,6 +57,7 @@
     font-weight: 700;
     letter-spacing: 0.5px;
     white-space: nowrap;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .nav-actions {
@@ -68,7 +70,7 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.2);
     border: none;
     color: white;
     font-size: 1.2rem;
@@ -80,7 +82,7 @@
     text-decoration: none;
 }
 
-.icon-btn:hover { background: #edc500; color: #14387f; transform: scale(1.1); }
+.icon-btn:hover { background: #edc500; color: #14387f; transform: scale(1.1); box-shadow: 0 0 10px rgba(237, 197, 0, 0.5); }
 .icon-btn:active { transform: scale(0.95); }
 
 .create-btn { background: #edc500; color: #14387f; }
@@ -90,7 +92,7 @@
 
 /* --- AKIŞ ALANI --- */
 .feed-wrapper {
-    padding-top: 100px;
+    padding-top: 110px;
     padding-bottom: 80px;
     display: flex;
     flex-direction: column;
@@ -105,17 +107,22 @@
     width: 100%;
     max-width: 550px;
     border-radius: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    margin-bottom: 25px;
+    /* Kartın zeminden ayrılması için daha iyi gölge */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02);
+    margin-bottom: 30px;
     overflow: hidden;
     transition: transform 0.2s;
+    border: 1px solid rgba(255,255,255,0.5); /* Hafif border */
 }
 
+/* Header */
 .card-header {
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #fff; /* Header beyaz kalsın */
+    border-bottom: 1px solid #f0f0f0; /* Hafif ayrım çizgisi */
 }
 
 .user-section {
@@ -125,32 +132,34 @@
 }
 
 .modern-avatar {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     background: linear-gradient(135deg, #14387f, #3b5fa8);
     color: white;
-    border-radius: 12px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(20, 56, 127, 0.2);
 }
 
 .user-meta { display: flex; flex-direction: column; }
-.username { font-weight: 700; font-size: 1rem; color: #111; }
-.location { font-size: 0.8rem; color: #888; }
+.username { font-weight: 700; font-size: 1.05rem; color: #111; }
+.location { font-size: 0.85rem; color: #777; font-weight: 500;}
 
 /* Rozetler */
 .modern-badge {
-    padding: 5px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.modern-badge.pending { background-color: #fff8e1; color: #f57c00; }
-.modern-badge.success { background-color: #e8f5e9; color: #2e7d32; }
+.modern-badge.pending { background-color: #fff8e1; color: #f57c00; border: 1px solid #ffe0b2;}
+.modern-badge.success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;}
 
 /* Görsel */
 .card-media {
@@ -159,6 +168,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid #f0f0f0;
 }
 .card-media img {
     width: 100%;
@@ -168,39 +178,39 @@
 }
 
 /* Alt Kısım */
-.card-body { padding: 15px 20px; }
+.card-body { padding: 20px; background-color: #fff; }
 
 .action-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .modern-like-btn {
     background: #f7f7f7;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-size: 0.95rem;
     font-weight: 600;
-    border: none;
+    border: 1px solid transparent;
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
     cursor: pointer;
-    transition: background 0.2s;
-    color: #444;
+    transition: all 0.2s;
+    color: #555;
     font-family: inherit;
 }
 
-.modern-like-btn:hover { background: #e1e4e8; }
-.modern-like-btn.liked { background: #ffebee; color: #e91e63; }
+.modern-like-btn:hover { background: #e1e4e8; border-color: #d1d5db; }
+.modern-like-btn.liked { background: #ffebee; color: #e91e63; border-color: #ffcdd2; }
 
-.like-count strong { color: #111; font-weight: 700; }
+.like-count strong { color: #111; font-weight: 800; }
 
-.post-title { margin: 0 0 5px 0; font-size: 1.1rem; color: #14387f; font-weight: 700; }
-.post-desc { color: #333; line-height: 1.5; font-size: 0.95rem; margin-bottom: 8px;}
-.post-time { font-size: 0.75rem; color: #bbb; text-transform: uppercase; }
+.post-title { margin: 0 0 8px 0; font-size: 1.2rem; color: #14387f; font-weight: 800; }
+.post-desc { color: #333; line-height: 1.6; font-size: 1rem; margin-bottom: 10px;}
+.post-time { font-size: 0.8rem; color: #aaa; text-transform: uppercase; font-weight: 600; }
 
 /* Loading */
 .feed-loading {
@@ -209,12 +219,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #f0f2f5;
+    background: #eef2f6;
     color: #666;
 }
 .spinner {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border: 4px solid #ddd;
     border-top-color: #14387f;
     border-radius: 50%;
@@ -228,6 +238,6 @@
     .floating-navbar { width: 94%; top: 15px; }
     .brand-logo { font-size: 1.2rem; }
     .nav-content { padding: 0 15px; }
-    .modern-card { border-radius: 16px; margin-bottom: 20px; }
+    .modern-card { border-radius: 20px; margin-bottom: 25px; }
     .card-header, .card-body { padding: 15px; }
 }
