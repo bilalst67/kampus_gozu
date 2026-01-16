@@ -248,7 +248,11 @@ const getAllProblemsForAdmin = async (req, res) => {
     try {
         // Kullanıcı bilgileriyle beraber çekiyoruz
         const query = `
-            SELECT s.*, k.AdSoyad, k.Email 
+            SELECT 
+                s.*, 
+                k.AdSoyad, 
+                k.Email,
+                (SELECT COUNT(*) FROM Destekler d WHERE d.SorunID = s.SorunID) AS desteksayisi
             FROM Sorunlar s
             JOIN Kullanicilar k ON s.KullaniciID = k.KullaniciID
             ORDER BY s.Tarih DESC
