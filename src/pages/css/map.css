@@ -1,0 +1,26 @@
+/* Harita Kapsayıcısı */
+.harita-kutusu {
+    width: 50%;
+    height: 500px;
+    
+    /* GÖRSELLİK */
+    border-radius: 20px;
+    border: 4px solid #14387f;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    
+    /* --- SORUN ÇÖZÜCÜLER --- */
+    overflow: hidden;    
+    outline: none;
+    touch-action: none; 
+    overscroll-behavior: contain;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    touch-action: none; /* Bunu da ekle */
+}

@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import './App.css'
+import { Routes, Route, Link } from 'react-router-dom';
+import UsPage from './pages/UsPage';
+import LoadPage from './pages/LoadPage';
+import UserForm from './pages/UserForm';
+import Login from './pages/Login';
+import About from './pages/About';
+import SignIn from './pages/SignIn';
+import NewProblem from './pages/NewProblem';
+import HeadPage from './pages/HeadPage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
-    return(
-        <div style={{padding:'20px'}}>
-            
-            <h1>Kampüs Radarı 📍</h1>
-            <p style={{fontFamily:'arial'}}>Burası proje üssümüz Burda: <br />
-                Popüler sorunlar <br/>
-                Kaç sorun paylaştın <br/>
-                ...
-                </p>
-            {/*Ileride harita buray gelcek*/}
-            <div tsyle={{
-                widht:'80%',
-                height:'400px',
-                bacgroundColor:'#e0e0e0',
-                display:'flex',
-                alignitems:'center',
-                justifyContent:'center',
-            }}>
-                Harita burda gözükecek
-            </div>
-        </div>
-    )
+  return (
+    <div className="App">
+        <Routes>
+            <Route path='/' element={<LoadPage />}/>
+            <Route path='/login' element={<Login />}/>
+            <Route path='/anasayfa' element={<HeadPage />}/>
+            <Route path="/anasayfa/profil" element={<UsPage />} />
+            <Route path='/anasayfa/profil/yenisorun' element={<NewProblem />}/>
+            <Route path='/anasayfa/profil/admin' element={<AdminPage/>}/>
+            <Route path="/about" element={<About />} />
+            <Route path='/signin'element={<SignIn />}/>
+        </Routes>
+    </div>
+  );
 }
 
 export default App;

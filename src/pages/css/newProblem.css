@@ -1,0 +1,184 @@
+/* --- GENEL SAYFA YAPISI (Diğer sayfalarla aynı arkaplan) --- */
+.np-body {
+    background-image: 
+        linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(20, 56, 127, 0.6) 100%),
+        url("../../assets/universite_gorsel.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px; /* Mobilde kenarlardan boşluk */
+    
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* --- ANA KART --- */
+.np-card {
+    background-color: rgba(255, 255, 255, 0.95); /* Harita olduğu için daha opak beyaz */
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 800px; /* Harita rahat sığsın diye geniş */
+    
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border-top: 5px solid #edc500; /* Sarı çizgi (Dikkat çeksin) */
+    
+    padding: 40px;
+    animation: slideUp 0.6s ease-out;
+}
+
+/* --- BAŞLIK ALANI --- */
+.np-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+.np-header h1 {
+    font-size: 2rem;
+    color:  #edc500;
+    margin: 0;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.back-btn:hover {
+    color: #14387f;
+}
+
+/* --- FORM ELEMANLARI --- */
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1; /* Yan yana eşit dağılsın */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Input ve Textarea Ortak Stilleri */
+.np-input, .np-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+    font-family: inherit; /* Times New Roman'ı koru */
+    box-sizing: border-box;
+}
+
+.np-textarea {
+    resize: vertical; /* Sadece dikey uzasın */
+    min-height: 100px;
+}
+
+.np-input:focus, .np-textarea:focus {
+    border-color: #14387f;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(20, 56, 127, 0.1);
+}
+
+/* --- HARİTA ALANI --- */
+.map-section {
+    margin-bottom: 25px;
+}
+
+.section-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.status-ok { color: #28a745; }
+.status-wait { color: #dc3545; }
+
+.map-wrapper {
+    height: 350px;
+    border-radius: 15px;
+    overflow: hidden; /* Harita taşmasın */
+    border: 3px solid #ddd;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* --- DOSYA YÜKLEME --- */
+.file-input {
+    padding: 10px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* --- BUTON --- */
+.np-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #14387f;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(20, 56, 127, 0.3);
+}
+
+.np-button:hover {
+    background-color: #edc500; /* Hoverda sarı olsun */
+    color: #14387f; /* Yazı laciverte dönsün */
+    transform: translateY(-3px);
+}
+
+/* --- RESPONSIVE (MOBİL İÇİN) --- */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column; /* Yan yana olanları alt alta al */
+        gap: 0;
+    }
+    .np-card {
+        padding: 20px;
+    }
+    .np-header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* --- GİRİŞ ANİMASYONU --- */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
