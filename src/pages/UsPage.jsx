@@ -22,7 +22,7 @@ function UsPage() {
         }
     };
 
-    // --- BİLDİRİM KONTROLÜ (YENİ) ---
+    // --- BİLDİRİM KONTROLÜ ---
     const checkNotifications = async (userId, token) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/notifications/${userId}`, {
@@ -31,11 +31,9 @@ function UsPage() {
             
             if (response.ok) {
                 const notifications = await response.json();
-                // Eğer okunmamış bildirim varsa Toast mesajı olarak göster
                 if (notifications.length > 0) {
                     notifications.forEach(notif => {
-                        // Her bir bildirim için ekranda uyarı çıkar
-                        showToast(notif.mesaj, "error"); // Kırmızı renk (error) dikkat çeker
+                        showToast(notif.mesaj, "error");
                     });
                 }
             }
@@ -54,9 +52,7 @@ function UsPage() {
 
         try {
             const token = localStorage.getItem("token");
-            // API adresini backend route'una göre kontrol et (senin kodunda /api/problem/delete/... olabilir veya /api/admin/...)
-            // Kullanıcının kendi silmesi için ayrı route yazdıysan onu kullan.
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/problem/${sorunId}`, { // BURAYI KENDİ ROUTE'UNA GÖRE AYARLA
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/problem/${sorunId}`, { 
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -112,7 +108,6 @@ function UsPage() {
             return;
         }
 
-        // 1. Kullanıcı Verilerini Çek
         fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}`, {
             method: "GET",
             headers: {
@@ -127,8 +122,6 @@ function UsPage() {
         .then(data => {
             setUserData(data);
             setLoading(false);
-            
-            // 2. Veriler gelince bildirimleri de kontrol et
             checkNotifications(userId, token);
         })
         .catch(err => {
@@ -164,12 +157,9 @@ function UsPage() {
                     </div>
                     
                     <div className="header-right">
-                        {/* Ana Sayfa Butonu */}
                         <Link to="/anasayfa" className="home-action-btn">
                             🏠 Ana Sayfa
                         </Link>
-
-                        {/* Çıkış Yap Butonu */}
                         <button onClick={handleLogout} className="logout-action-btn" title="Çıkış Yap">
                             Çıkış Yap 🚪
                         </button>
@@ -195,7 +185,12 @@ function UsPage() {
                                         <div className="pc-image-wrapper">
                                             {kayit.FotografUrl ? (
                                                 <img
-                                                    src={`${import.meta.env.VITE_API_URL}${kayit.FotografUrl}`}
+                                                    // --- DÜZELTME BURADA YAPILDI (post -> kayit) ---
+                                                    src={
+                                                        kayit.FotografUrl.startsWith('http') 
+                                                            ? kayit.FotografUrl 
+                                                            : `${import.meta.env.VITE_API_URL}${kayit.FotografUrl}`
+                                                    } 
                                                     alt="Sorun"
                                                     onError={(e) => {e.target.style.display='none'}}
                                                 />

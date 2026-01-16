@@ -260,3 +260,51 @@
     background: #f9f9f9;
     border-radius: 10px;
 }
+/* Sağ taraftaki butonları yan yana diz */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* İki buton arasındaki boşluk */
+}
+
+/* Ana Sayfa Butonu Stili */
+.home-action-btn {
+    text-decoration: none;
+    background-color: #007bff; /* Mavi renk */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.home-action-btn:hover {
+    background-color: #0056b3; /* Koyu mavi */
+    transform: translateY(-2px);
+}
+
+.home-action-btn:active {
+    transform: translateY(0);
+}
+
+/* Eğer logout butonun css'i eksikse onu da şöyle güzelleştirebilirsin: */
+.logout-action-btn {
+    background-color: #dc3545; /* Kırmızı */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.logout-action-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
