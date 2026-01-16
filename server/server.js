@@ -5,7 +5,7 @@ require("dotenv").config();
 const userRoutes = require('./routes/userRoutes'); // Rotaları import ettik
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -21,5 +21,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Sunucu http://localhost:${PORT} adresinde aktif.`);
+    console.log(`Server ${PORT} portunda çalışıyor...`);
 });

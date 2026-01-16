@@ -63,7 +63,7 @@ const userCreateProblem = async (req, res) => {
         const { Baslik, Aciklama, Latitude, Longitude, KonumMetni } = req.body;
 
         // Dosya yüklendiyse yolunu al, yüklenmediyse null geç
-        const FotografUrl = req.file ? `/uploads/${req.file.filename}` : null;
+        const FotografUrl = req.file ? req.file.path : null;
 
         if (!Baslik || !Aciklama || !Latitude || !Longitude) {
             return res.status(400).json({ message: "Başlık, Açıklama ve Konum bilgileri zorunludur!" });
