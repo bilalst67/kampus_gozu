@@ -1,8 +1,7 @@
-/* --- GENEL AYARLAR (LoadPage ile Aynı) --- */
+/* --- GENEL AYARLAR --- */
 .loginBody {
-    /* Sayfa Arka Planı */
     background-image: 
-        linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(20, 56, 127, 0.6) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(20, 56, 127, 0.5) 100%),
         url("../../assets/universite_gorsel.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -13,22 +12,24 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    font-family: 'Times New Roman', Times, serif;
+    padding: 20px;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
     overflow: hidden;
 }
 
 /* --- GİRİŞ KARTI (Glassmorphism) --- */
 .loginCard {
-    background-color: rgba(255, 255, 255, 0.9); /* Beyazın hafif şeffaf hali */
-    backdrop-filter: blur(10px); /* Arkası bulanık */
-    padding: 50px 40px;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 40px 30px;
     width: 100%;
     max-width: 400px;
     
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    border-top: 5px solid #14387f; /* Üstte kurumsal lacivert çizgi */
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15); /* Soft gölge */
+    border: 1px solid rgba(255,255,255,0.4);
+    border-top: 6px solid #14387f; /* Mavi Çizgi */
     
     text-align: center;
     animation: fadeIn 0.8s ease-out;
@@ -36,96 +37,95 @@
 
 /* --- BAŞLIKLAR --- */
 .loginBaslik {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: #14387f;
     margin: 0;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .loginAltBaslik {
-    font-size: 1.2rem;
-    color: #555;
+    font-size: 1rem;
+    color: #666;
     margin-bottom: 30px;
+    margin-top: 5px;
 }
 
 /* --- İNPUTLAR --- */
 .input-group {
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .loginInput {
     width: 100%;
-    padding: 15px;
-    box-sizing: border-box; /* Padding taşmasını engeller */
-    
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.8);
     font-size: 1rem;
     outline: none;
     transition: all 0.3s;
+    font-family: inherit;
 }
 
 .loginInput:focus {
     border-color: #14387f;
     background-color: #fff;
-    box-shadow: 0 0 8px rgba(20, 56, 127, 0.2);
+    box-shadow: 0 0 0 4px rgba(20, 56, 127, 0.1); /* Yumuşak focus halkası */
 }
 
 /* --- BUTON --- */
 .loginButton {
     width: 100%;
-    padding: 15px;
+    padding: 16px;
     margin-top: 10px;
-    
-    background-color: #14387f; /* Kurumsal Lacivert */
+    background: linear-gradient(135deg, #14387f, #1e4bb5);
     color: white;
     font-size: 1.1rem;
-    font-weight: bold;
+    font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s;
+    box-shadow: 0 6px 20px rgba(20, 56, 127, 0.25);
 }
 
 .loginButton:hover {
-    background-color: #0f2b63;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(20, 56, 127, 0.4);
+    box-shadow: 0 10px 25px rgba(20, 56, 127, 0.35);
 }
 
-/* --- ALT KISIM (Kayıt Ol) --- */
+/* --- ALT KISIM --- */
 .loginFooter {
     margin-top: 25px;
-    font-size: 1rem;
-    color: #333;
+    font-size: 0.95rem;
+    color: #444;
 }
 
-.loginRegText {
-    margin-right: 5px;
-}
+.loginRegText { margin-right: 5px; }
 
 .loginLink {
-    color: #14387f; /* Projenin Sarı Rengi */
+    color: #14387f;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
     transition: color 0.3s;
 }
 
 .loginLink:hover {
-    color: #bfa300;
+    color: #0f2b63;
     text-decoration: underline;
 }
 
-/* --- GİRİŞ ANİMASYONU --- */
+/* --- ANİMASYON --- */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- MOBİL --- */
+@media (max-width: 480px) {
+    .loginCard { padding: 30px 20px; }
+    .loginBaslik { font-size: 1.8rem; }
 }

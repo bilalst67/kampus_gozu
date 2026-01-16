@@ -1,215 +1,130 @@
 /* --- GENEL AYARLAR --- */
 body {
     background-image: 
-        linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(20, 56, 127, 0.4) 100%),
         url("../../assets/universite_gorsel.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
-    font-family: 'Times New Roman', Times, serif;
+    /* Modern Font Ailesi */
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica', sans-serif; 
     margin: 0; 
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
 .loadPage {
     text-align: center;
 }
 
-/* --- 1. NAVBAR (SABİT ÜST MENÜ) --- */
+/* --- 1. NAVBAR --- */
 .navbar {
     display: flex;
     align-items: center;
-    height: 80px;
-    width: 95%;
+    justify-content: space-between; /* Mobilde içerik dağılımı */
+    height: 70px;
+    width: 90%;
+    max-width: 1200px;
     
-    /* Konumlandırma - Fixed ile ekrana çiviliyoruz */
-    position:fixed; 
+    position: fixed; 
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
 
-    /* Görsellik */
-    border-radius: 10px 10px 0 10px; 
-    background-color: rgba(20, 56, 127, 0.95);
-    backdrop-filter: blur(5px);
+    border-radius: 16px; 
+    background-color: rgba(20, 56, 127, 0.85); /* Daha transparan */
+    backdrop-filter: blur(12px); /* Buzlu cam efekti */
+    -webkit-backdrop-filter: blur(12px);
     color: #f4f4f4;
-    padding: 0 20px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    padding: 0 25px; 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Yumuşak gölge */
+    transition: all 0.3s ease;
 }
+
 .hero-bolumu {
-    /* Tüm ekranı kaplasın ama navbar payı kalsın */
     height: 100vh; 
     width: 100%;
-    
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
-    /* Yazı Stilleri */
     color: white;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-    
-    /* --- PARALLAX SİHRİ BURADA --- */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     position: sticky;
     top: 0;
     z-index: 0;
+    padding: 20px;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 .hero-bolumu h1 {
-    font-size: 4rem;
-    margin-bottom: 10px;
-    font-weight: bold;
-    letter-spacing: 2px;
+    font-size: 3.5rem; 
+    margin-bottom: 15px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
 .hero-bolumu p {
-    font-size: 1.5rem;
-    font-weight: 300;
+    font-size: 1.2rem;
+    font-weight: 400;
+    opacity: 0.95;
+    max-width: 600px;
 }
 
-/* --- 3. MEVCUT İÇERİK (ÜSTÜNE KAYAN KISIM) --- */
+/* --- MOBİL UYUMLULUK (Hero) --- */
+@media (max-width: 768px) {
+    .hero-bolumu h1 { font-size: 2.2rem; }
+    .hero-bolumu p { font-size: 1rem; }
+    .navbar { width: 95%; padding: 0 15px; height: 60px; }
+}
+
+/* --- MEVCUT İÇERİK --- */
 .example-use {
     margin: 0 auto; 
     width: 100%; 
     min-height: 100vh; 
-    
-    background-color: #f9f9f9;
+    background-color: #f8f9fa; /* Göz yormayan kırık beyaz */
     color: #333;
-    
-    /* Kenarlıklar */
-    border-top: 5px solid #34666e;
     border-radius: 30px 30px 0 0;
-    
-    padding-top: 50px;
+    padding-top: 60px;
     text-align: center;
-    
-    /* --- PARALLAX AYARI --- */
     position: relative;
     z-index: 10;
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
 }
 
-/* --- YAN PANEL (SIDEBAR) --- */
-.slide-panel {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    
-    width: 250px;
-    background-color: #344b99;
-    padding: 20px 0;
-    
-    box-shadow: -4px 5px 15px rgba(0, 0, 0, 0.5);
-    border-radius: 0 0 10px 10px;
-    
-    transform: translateX(120%);
-    transition: transform 0.4s cubic-bezier(0.150, 0.850, 0.30, 1.250);
-    z-index: 99;
-}
-
-.slide-panel.acik {
-    transform: translateX(0);
-}
-
-/* --- BUTON VE LİNKLER --- */
-.buton {
-    margin-left: auto; 
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 101;
-    transition: transform 0.4s ease-in-out;
-    filter: invert(1);
-}
-
-.buton.acik {
-    transform: rotate(90deg);
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.link {
-    display: block;
-    text-decoration: none;
-    color: #f4f4f4;
-    padding: 15px 20px;
-    margin: 5px 10px;
-    border-radius: 8px;
-    transition: all 0.3s;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.link:hover {
-    background-color: #edc500;
-    color: #141414;
-    transform: translateX(-5px);
-}
-
-/* --- METİN BOYUTLARI --- */
-.headText {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.bottomHeadText {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #14387f;
-}
-
-.bottomCommotText {
-    font-size: 1.2rem;
-    display: block;
-    margin-bottom: 30px;
-}
-
-/* --- İÇERİK KUTULARI --- */
-.section-container {
-    padding: 60px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    border-bottom: 1px solid #ddd;
-}
-
-.section-desc {
-    font-size: 1.2rem;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-/* --- NASIL ÇALIŞIR (KARTLAR) --- */
+/* --- KARTLAR (Grid Yapısı) --- */
 .steps-grid {
     display: flex;
     justify-content: center;
     gap: 30px;
     margin-top: 40px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Mobilde alt alta geçsin */
+    padding: 0 20px;
 }
 
 .step-card {
-    background: rgba(255, 255, 255, 0.700);
+    background: rgba(255, 255, 255, 0.95);
     padding: 30px;
-    border-radius: 15px;
-    width: 250px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.555);
-    transition: transform 0.3s ease;
+    border-radius: 20px;
+    width: 280px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); /* Çok soft gölge */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .step-card:hover {
     transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
 .step-icon {
     font-size: 3rem;
     margin-bottom: 15px;
+    display: block;
 }
 
 .step-card h3 {
@@ -217,45 +132,93 @@ ul {
     margin-bottom: 10px;
 }
 
+/* --- YAN PANEL --- */
+.slide-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 250px;
+    background-color: rgba(20, 56, 127, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px 0;
+    box-shadow: -4px 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 15px 15px;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.15, 0.85, 0.30, 1.25);
+    z-index: 99;
+}
+
+.slide-panel.acik { transform: translateX(0); }
+
+.buton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+    transition: transform 0.4s ease-in-out;
+    filter: invert(1); /* İkonu beyaz yapmak için */
+    padding: 5px;
+}
+
+.buton.acik { transform: rotate(90deg); }
+
+ul { list-style: none; padding: 0; margin: 0; }
+
+.link {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    padding: 15px 20px;
+    margin: 5px 10px;
+    border-radius: 12px;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.link:hover {
+    background-color: #edc500;
+    color: #14387f;
+    transform: translateX(-5px);
+}
+
 /* --- İSTATİSTİK BANDI --- */
 .stats-banner {
-    background-color: #14387f;
+    background: linear-gradient(135deg, #14387f, #0a2357);
     color: white;
     display: flex;
     justify-content: space-around;
-    padding: 50px 0;
-    margin-top: 0;
+    padding: 60px 20px;
+    flex-wrap: wrap; 
+    gap: 30px;
+    margin-top: 60px;
 }
 
 .stat-item {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .stat-number {
     font-size: 3rem;
-    font-weight: bold;
+    font-weight: 800;
     color: #edc500;
+    line-height: 1;
+    margin-bottom: 10px;
 }
 
 .stat-label {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     opacity: 0.9;
 }
 
 /* --- FOOTER --- */
 .page-footer {
-    background-color: #111;
-    color: #888;
-    padding: 40px 0;
-    margin-top: 0;
+    background-color: #1a1a1a;
+    color: #999;
+    padding: 40px 20px;
 }
 
-.page-footer a {
-    color: #edc500;
-    text-decoration: none;
-}
-
-.page-footer a:hover {
-    text-decoration: underline;
-}
+.page-footer a { color: #edc500; text-decoration: none; }
+.page-footer a:hover { text-decoration: underline; }
