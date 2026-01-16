@@ -1,7 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import UsPage from './pages/UsPage';
 import LoadPage from './pages/LoadPage';
-import UserForm from './pages/UserForm';
 import Login from './pages/Login';
 import About from './pages/About';
 import SignIn from './pages/SignIn';
