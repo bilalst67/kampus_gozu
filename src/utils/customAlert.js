@@ -7,8 +7,8 @@ export const showToast = (title, icon = 'success') => {
         position: 'top-end',
         showConfirmButton: false,
         timer: 2000,
-        background: '#000000',
-        color: '#cccccc',
+        background: '#adabc7',
+        color: '#161616',
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
