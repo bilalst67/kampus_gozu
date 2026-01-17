@@ -160,8 +160,11 @@ function UsPage() {
                         <Link to="/anasayfa" className="home-action-btn">
                             🏠 Ana Sayfa
                         </Link>
+                        <Link to="/anasayfa/profil/ayarlar" className="settings-action-btn">
+                            ⚙️ Ayarlar
+                        </Link>
                         <button onClick={handleLogout} className="logout-action-btn" title="Çıkış Yap">
-                            Çıkış Yap 🚪
+                            🚪 Çıkış Yap
                         </button>
                     </div>
                 </div>

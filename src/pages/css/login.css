@@ -129,3 +129,32 @@
     .loginCard { padding: 30px 20px; }
     .loginBaslik { font-size: 1.8rem; }
 }
+.password-group {
+    position: relative; /* İkonu içeride konumlandırmak için şart */
+    display: flex;
+    align-items: center;
+}
+
+/* İkonun üzerine yazı gelmemesi için sağdan boşluk */
+.password-group .loginInput {
+    padding-right: 45px; 
+}
+
+/* İkonun Konumu */
+.password-toggle-icon {
+    position: absolute;
+    right: 15px; /* Sağ kenardan mesafe */
+    top: 50%;
+    transform: translateY(-50%); /* Dikey ortalama */
+    cursor: pointer;
+    color: #666; /* İkon rengi */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+    z-index: 10;
+}
+
+.password-toggle-icon:hover {
+    color: #14387f; /* Hover olduğunda mavi olsun */
+}

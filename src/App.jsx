@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route} from 'react-router-dom';
 import UsPage from './pages/UsPage';
 import LoadPage from './pages/LoadPage';
 import Login from './pages/Login';
@@ -7,6 +7,7 @@ import SignIn from './pages/SignIn';
 import NewProblem from './pages/NewProblem';
 import HeadPage from './pages/HeadPage';
 import AdminPage from './pages/AdminPage';
+import UsPageSet from './pages/UsPagwSet';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path='/login' element={<Login />}/>
             <Route path='/anasayfa' element={<HeadPage />}/>
             <Route path="/anasayfa/profil" element={<UsPage />} />
+            <Route path='/anasayfa/profil/ayarlar' element={<UsPageSet/>}/>
             <Route path='/anasayfa/profil/yenisorun' element={<NewProblem />}/>
             <Route path='/anasayfa/profil/admin' element={<AdminPage/>}/>
             <Route path="/about" element={<About />} />

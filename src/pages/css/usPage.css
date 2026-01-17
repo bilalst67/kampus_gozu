@@ -166,7 +166,45 @@
     background: #14387f; color: white; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; box-shadow: 0 5px 15px rgba(20, 56, 127, 0.2);
 }
 .add-new-btn:hover { transform: translateY(-2px); background: #0f2b63; }
+/* --- AYARLAR BUTONU --- */
+.settings-action-btn {
+    text-decoration: none;
+    background-color: #6c757d; /* Gri tonu (Nötr işlem) */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
+.settings-action-btn:hover {
+    background-color: #5a6268; /* Hoverda biraz koyulaşır */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+.settings-action-btn:active {
+    transform: translateY(0);
+}
+
+/* Mobil uyumluluk için (Eğer butonlar sığmazsa alt alta geçsin) */
+@media (max-width: 600px) {
+    .header-right {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .settings-action-btn {
+        width: 100%; /* Mobilde tam genişlik */
+        justify-content: center;
+    }
+}
 /* MOBİL */
 @media (max-width: 600px) {
     .profile-container { padding: 20px; }
