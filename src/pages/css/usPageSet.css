@@ -1,0 +1,276 @@
+/* --- GENEL --- */
+.us-set-body {
+    background-image: 
+        linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(20, 56, 127, 0.6) 100%),
+        url("../../assets/universite_gorsel.jpeg");
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* --- KONTEYNER (Glassmorphism) --- */
+.settings-container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 600px; /* Form çok geniş olmasın */
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    animation: fadeIn 0.6s ease-out;
+    border-top: 6px solid #edc500; /* Sarı Çizgi */
+}
+
+/* --- HEADER --- */
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.settings-header h1 {
+    font-size: 1.8rem;
+    color: #14387f;
+    margin: 0;
+    font-weight: 800;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #14387f;
+}
+
+/* --- AVATAR BÖLÜMÜ --- */
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.big-avatar {
+    width: 100px;
+    height: 100px;
+    background: #14387f;
+    color: white;
+    font-size: 3rem;
+    font-weight: 800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(20, 56, 127, 0.3);
+    margin-bottom: 15px;
+    border: 4px solid #f8f9fa;
+}
+
+.avatar-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.avatar-role {
+    font-size: 0.9rem;
+    color: #777;
+    background: #f0f2f5;
+    padding: 4px 12px;
+    border-radius: 12px;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+/* --- FORM --- */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-group small {
+    color: #888;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+/* INPUTLAR */
+.set-input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #eef2f6;
+    border-radius: 12px;
+    background: #f8f9fa;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: all 0.3s;
+    font-family: inherit;
+    color: #333;
+}
+
+.set-input:focus {
+    border-color: #14387f;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(20, 56, 127, 0.1);
+    outline: none;
+}
+
+/* BUTONLAR */
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.save-btn {
+    flex: 2; /* Kaydet butonu daha geniş olsun */
+    padding: 16px;
+    background: linear-gradient(135deg, #14387f, #1e4bb5);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 20px rgba(20, 56, 127, 0.25);
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(20, 56, 127, 0.35);
+}
+
+.cancel-btn {
+    flex: 1;
+    padding: 16px;
+    background: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #f5c6cb;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* --- LOADING --- */
+.us-set-loading {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #eef2f6;
+    color: #666;
+    font-family: 'Segoe UI', sans-serif;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #ddd;
+    border-top-color: #14387f;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+    margin-bottom: 15px;
+}
+
+/* --- DANGER ZONE (HESAP SİLME ALANI) --- */
+.danger-zone {
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 2px dashed #ffccd5; /* Kesikli hafif kırmızı çizgi */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Mobilde alt alta geçsin */
+    gap: 20px;
+}
+
+.danger-text h3 {
+    margin: 0 0 5px 0;
+    color: #dc3545;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.danger-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Kırmızı Silme Butonu */
+.delete-account-btn {
+    background-color: #fff;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.delete-account-btn:hover {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Mobil Uyum */
+@media (max-width: 600px) {
+    .danger-zone {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .delete-account-btn {
+        width: 100%;
+    }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* MOBİL */
+@media (max-width: 600px) {
+    .settings-container { padding: 25px; }
+    .settings-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .button-group { flex-direction: column-reverse; } /* Mobilde iptal altta kalsın */
+    .save-btn, .cancel-btn { width: 100%; }
+}

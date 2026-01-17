@@ -186,14 +186,37 @@ const updateUser = async (req, res) => {
     }
 };
 
-// 7. DELETE USER (Sil - Sadece Admin)
+// 7. DELETE USER (Kullanıcı Hesabını Sil)
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        await pool.query('DELETE FROM Kullanicilar WHERE KullaniciID=$1', [id]);
-        res.json({ message: "Kullanıcı Silindi" });
+        const requesterId = req.user.id;
+
+        // --- GÜVENLİK KONTROLÜ ---
+        // Eğer URL'deki ID ile Token'daki ID eşleşmiyorsa işlemi durdur.
+        // (parseInt kullanıyoruz çünkü params string gelir, token number olabilir)
+        if (parseInt(id) !== parseInt(requesterId)) {
+            return res.status(403).json({ 
+                message: "Yetkisiz işlem! Sadece kendi hesabınızı silebilirsiniz." 
+            });
+        }
+
+        // 3. Silme İşlemi
+        const result = await pool.query(
+            'DELETE FROM Kullanicilar WHERE KullaniciID=$1 RETURNING *', 
+            [id]
+        );
+
+        // Eğer silinecek kullanıcı zaten yoksa
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+        }
+
+        res.json({ message: "Hesabınız başarıyla silindi." });
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Silme Hatası:", error);
+        res.status(500).json({ message: "Sunucu hatası oluştu." });
     }
 };
 

@@ -28,7 +28,7 @@ router.delete('/problem/delete/:id', verifyToken, problemController.userDeletePr
 // Kullanıcı Güncelleme ve Silme
 router.put('/update/:id', verifyToken, userController.updateUser);
 router.put('/admin/problem/status/:id', verifyToken, verifyAdmin, problemController.updateProblemStatus);
-router.delete('/delete/:id', verifyToken, verifyAdmin, userController.deleteUser);
+router.delete('/delete/:id', verifyToken,userController.deleteUser);
 router.delete('/admin/problem/:id',verifyToken,verifyAdmin,problemController.deleteProblemAdmin)
 
 module.exports = router;
