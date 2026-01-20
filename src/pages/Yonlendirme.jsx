@@ -5,7 +5,7 @@ function Yonlendirme() {
         <div className="hero-bolumu">
                 <h1>Kampüs Gözü'ne Hoşgeldiniz</h1>
                 <p>Kampüs gözü artık .com uzantılı!!</p>
-                <a href="http://kampusgozu.com/">Kampüs gözü</a>
+                <a href="http://kampusgozu.com/">Kampüs gözü .com</a>
         </div>
     )
 }
