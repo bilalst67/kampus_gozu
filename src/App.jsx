@@ -8,11 +8,14 @@ import NewProblem from './pages/NewProblem';
 import HeadPage from './pages/HeadPage';
 import AdminPage from './pages/AdminPage';
 import UsPageSet from './pages/UsPagwSet';
+import Yonlendirme from './pages/Yonlendirme';
 
 function App() {
   return (
     <div className="App">
         <Routes>
+            <Route path='/' element={<Yonlendirme/>}/>
+          {/*
             <Route path='/' element={<LoadPage />}/>
             <Route path='/login' element={<Login />}/>
             <Route path='/anasayfa' element={<HeadPage />}/>
@@ -21,7 +24,7 @@ function App() {
             <Route path='/anasayfa/profil/yenisorun' element={<NewProblem />}/>
             <Route path='/anasayfa/profil/admin' element={<AdminPage/>}/>
             <Route path="/about" element={<About />} />
-            <Route path='/signin'element={<SignIn />}/>
+            <Route path='/signin'element={<SignIn />}/>*/}
         </Routes>
     </div>
   );
