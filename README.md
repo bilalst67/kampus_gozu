@@ -2,7 +2,7 @@
 
 ### 🎓 Uludağ University - Digital Issue Reporting & Mapping Platform
 
-**Kampüs Gözü** is an interactive web application designed for students to report infrastructure problems, environmental issues, or requests (e.g., broken lights, HVAC failures, cleaning needs) directly to the university administration.
+**Kampüs Gözü** is an interactive web application designed for students and academicians to report infrastructure problems, environmental issues, or requests directly to the university administration.
 
 The platform utilizes **geolocation** to pin exact problem locations on a map, aiming to improve campus living standards through digital participation and rapid response mechanisms.
 
@@ -10,33 +10,34 @@ The platform utilizes **geolocation** to pin exact problem locations on a map, a
 
 ## 🚀 Key Features
 
-* **🔒 Institutional Verification:** Strict signup policy allowing only users with a verified `@ogr.uludag.edu.tr` email address.
-* **📍 Geolocation & Mapping:** Issues are reported with precise coordinates (Latitude/Longitude) using **Leaflet** integration.
-* **📸 Evidence Based:** Users can attach photos and detailed descriptions to their reports.
-* **📋 Status Tracking:** Lifecycle tracking for reported issues: *Pending Approval* ➔ *In Progress* ➔ *Resolved*.
-* **📱 Responsive Design:** Fully accessible via mobile devices, tablets, and desktops.
+* **🔒 Institutional Verification:** Strict signup policy allowing only users with a verified `@ogr.uludag.edu.tr` or `@uludag.edu.tr` email address via SMTP verification.
+* **📍 Geolocation & Mapping:** Issues are reported with precise coordinates using **Leaflet** integration. Users can select locations directly on the map.
+* **🛡️ Admin Panel:** Dedicated interface for administrators to Approve, Reject, or mark issues as Resolved.
+* **📸 Evidence Based:** Users can upload photos via **Multer** to support their reports.
+* **👍 Community Support:** Students can "Support" (Like) reported issues to increase their priority.
+* **🔔 Notifications:** Users receive system notifications regarding the status of their reports.
+* **🔐 Advanced Security:** Protected with **Helmet**, **Rate Limiting**, **CORS** policies, and **JWT** authentication.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## 🛠️ Tech Stack
 
-This project utilizes a **Cloud-Native Architecture**. The frontend is deployed on Vercel, while the backend API and database are hosted on Render.
+This project utilizes a **Client-Server Architecture**.
 
 ### **Frontend (Client)**
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 
 ### **Backend & Security**
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-007ACC?style=for-the-badge&logo=gmail&logoColor=white)
 
 ### **Database**
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 ---
 
@@ -44,7 +45,7 @@ This project utilizes a **Cloud-Native Architecture**. The frontend is deployed 
 
 The application follows a standard Client-Server model:
 
-`React Client (Vercel)` ➔ `REST API (Render/Node.js)` ➔ `PostgreSQL Database (Render/Cloud)`
+`React Client` ➔ `REST API (Express.js)` ➔ `MySQL Database`
 
 ---
 
@@ -55,94 +56,124 @@ Follow these steps to run the project locally for development.
 ### 1. Prerequisites
 Ensure you have the following installed:
 * Node.js (v18 or higher)
-* Docker & Docker Compose (for local database)
+* MySQL Server (Local or Cloud)
 
 ### 2. Clone the Repository
 ```bash
-git clone [https://github.com/bilalst67/kampus-gozu.git](https://github.com/bilalst67/kampus-gozu.git)
-cd kampus-gozu
-npm install
-
+git clone [https://github.com/bilalst67/kampus_gozu.git](https://github.com/bilalst67/kampus_gozu.git)
+cd kampus_gozu
 ```
+### 3. Database Setup
 
-### 3. Database Setup (Docker)
-
-Start the PostgreSQL container for local development.
-
-```bash
-sudo docker run --name kampus_postgres \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=YourStrongPassword123! \
-  -e POSTGRES_DB=KampusDB \
-  -p 5432:5432 \
-  --restart unless-stopped \
-  -d postgres
-
-```
+Create a MySQL database named KampusDB and import the schema (tables structure provided below).
 
 ### 4. Environment Variables
 
-Create a `.env` file in the root directory and configure your credentials.
+Create a .env file in the server directory and configure your credentials.
+Ini, TOML
+```
+# Server Config
+PORT=5000
+NODE_ENV=development
 
-**For Local Development:**
-
-```ini
-# Database Configuration
-DB_USER=postgres
-DB_PASSWORD=YourStrongPassword123!
+# Database Configuration (MySQL)
 DB_HOST=localhost
-DB_PORT=5432
-DB_DATABASE=KampusDB
+DB_USER=root
+DB_PASS=YourStrongPassword
+DB_NAME=KampusDB
 
 # Security
-JWT_SECRET=your_super_secret_key
+JWT_SECRET=your_super_secret_key_change_this
 
+# Email Service (SMTP)
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USER=your_email@gmail.com
+MAIL_PASS=your_app_password
 ```
-
-*> Note: When deploying to Render, add these variables to the Render Environment settings.*
-
 ### 5. Run the App
 
-```bash
-# Start Backend
+Backend:
+```Bash
+
 cd server
+npm install
 node server.js
-
-# Start Frontend (in a new terminal)
-npm start
-
 ```
+Frontend:
+```Bash
 
-The application will run at `http://localhost:3000`.
+# In a new terminal
+cd client
+npm install
+npm run dev
+```
+The application will run at http://localhost:5173 (Vite default) or http://localhost:3000.
 
----
+## 🗄️ Database Schema (MySQL)
 
-## 🗄️ Database Schema
+The project uses a Relational Database model powered by MySQL.
 
-The project uses a Relational Database model powered by **PostgreSQL**.
+Users Table (Kullanicilar)
+```SQL
 
-* **Users Table (kullanicilar):** Stores student details with email domain validation.
-* **Issues Table (sorunlar):** Stores issue details, related user ID, GPS coordinates, and status.
-
-**Sample SQL Structure:**
-
-```sql
-CREATE TABLE sorunlar (
-    sorun_id SERIAL PRIMARY KEY,
-    baslik VARCHAR(100),
-    aciklama TEXT,
-    latitude DECIMAL(9, 6),
-    longitude DECIMAL(9, 6),
-    durum VARCHAR(20) DEFAULT 'Pending'
+CREATE TABLE Kullanicilar (
+    KullaniciID INT AUTO_INCREMENT PRIMARY KEY,
+    Ad VARCHAR(50) NOT NULL,
+    Soyad VARCHAR(50) NOT NULL,
+    KullaniciAdi VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    Sifre VARCHAR(255) NOT NULL,
+    Rol VARCHAR(20) DEFAULT 'Öğrenci',
+    IsVerified TINYINT(1) DEFAULT 0,
+    VerificationToken VARCHAR(100)
 );
-
 ```
+Issues Table (Sorunlar)
+```SQL
 
+CREATE TABLE Sorunlar (
+    SorunID INT AUTO_INCREMENT PRIMARY KEY,
+    KullaniciID INT,
+    Baslik VARCHAR(100),
+    Aciklama TEXT,
+    Latitude DECIMAL(10, 8),
+    Longitude DECIMAL(11, 8),
+    KonumMetni VARCHAR(255),
+    FotografUrl VARCHAR(255),
+    Durum VARCHAR(20) DEFAULT 'Beklemede',
+    Tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (KullaniciID) REFERENCES Kullanicilar(KullaniciID) ON DELETE CASCADE
+);
+```
+Supports Table (Destekler)
+```SQL
+
+CREATE TABLE Destekler (
+    DestekID INT AUTO_INCREMENT PRIMARY KEY,
+    KullaniciID INT,
+    SorunID INT,
+    FOREIGN KEY (KullaniciID) REFERENCES Kullanicilar(KullaniciID),
+    FOREIGN KEY (SorunID) REFERENCES Sorunlar(SorunID) ON DELETE CASCADE
+);
+```
+Notifications Table (Bildirimler)
+```SQL
+
+CREATE TABLE Bildirimler (
+    BildirimID INT AUTO_INCREMENT PRIMARY KEY,
+    KullaniciID INT,
+    Mesaj TEXT NOT NULL,
+    Okundu TINYINT(1) DEFAULT 0,
+    Tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (KullaniciID) REFERENCES Kullanicilar(KullaniciID) ON DELETE CASCADE
+);
+```
 ---
 
 ## 👤 Author
 
-**Bilal Sarış**
+**Bilal Sarıtaş**
 
 * GitHub: [@bilalst67](https://www.google.com/search?q=https://github.com/bilalst67)
 * *Developed for the Web Project Management Course.*
@@ -151,6 +182,6 @@ CREATE TABLE sorunlar (
 
 ## 📄 License
 
-Copyright 2025 Bilal Sarış.
+Copyright 2026 Bilal Sarıtaş.
 
 Licensed under the Apache License, Version 2.0. See the [LICENSE](http://www.apache.org/licenses/LICENSE-2.0) file for details.
