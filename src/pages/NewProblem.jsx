@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import SelectionMap from "./companents/selectionMap"; // Klasör yolu düzeltildi
+import SelectionMap from "./companents/selectionMap"; 
 import { useNavigate, Link } from "react-router-dom";
 import { isTokenExpired } from "../utils/auth";
 import { showToast } from "../utils/customAlert";
@@ -20,20 +20,18 @@ function NewProblem() {
     useEffect(() => {
         const token = localStorage.getItem("token");
 
-        // 1. Token hiç yoksa? -> Giriş'e at
         if (!token) {
             navigate("/");
             return;
         }
 
-        // 2. Token var ama süresi dolmuş mu? -> Temizle ve Giriş'e at
         if (isTokenExpired(token)) {
             showToast("Oturum süreniz doldu. Lütfen tekrar giriş yapın.", 'info');
             localStorage.removeItem("token");
             localStorage.removeItem("userRole");
             navigate("/");
         }
-    }, [navigate]); // navigate dependency eklendi
+    }, [navigate]);
 
     const konumYakala = (lat, lng) => {
         setSorun({ ...sorun, Latitude: lat, Longitude: lng });
@@ -89,16 +87,12 @@ function NewProblem() {
     return (
         <div className="np-body">
             <div className="np-card">
-                
-                {/* Üst Başlık ve Geri Butonu */}
                 <div className="np-header">
                     <Link to="/anasayfa" className="back-btn">← Geri</Link>
                     <h1>Yeni Sorun Bildir</h1>
                 </div>
 
                 <form onSubmit={handleSubmit} className="np-form">
-                    
-                    {/* 1. Başlık ve Konum Metni (Yan Yana) */}
                     <div className="form-row">
                         <div className="form-group">
                             <label>Sorun Başlığı</label>
@@ -124,7 +118,6 @@ function NewProblem() {
                         </div>
                     </div>
 
-                    {/* Açıklama */}
                     <div className="form-group">
                         <label>Detaylı Açıklama</label>
                         <textarea 
@@ -136,7 +129,6 @@ function NewProblem() {
                         ></textarea>
                     </div>
 
-                    {/* 2. Harita Bölümü */}
                     <div className="map-section">
                         <label className="section-label">
                             Konumu İşaretle: 
@@ -150,7 +142,6 @@ function NewProblem() {
                         </div>
                     </div>
 
-                    {/* 3. Fotoğraf Yükleme */}
                     <div className="form-group file-group">
                         <label>Fotoğraf Ekle (Opsiyonel)</label>
                         <input 
@@ -161,11 +152,9 @@ function NewProblem() {
                         />
                     </div>
 
-                    {/* 4. Gönder Butonu */}
                     <button className="np-button" type="submit">
                         BİLDİRİMİ GÖNDER 🚀
                     </button>
-
                 </form>
             </div>
         </div>

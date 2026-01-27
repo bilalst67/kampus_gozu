@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Map from "./companents/loadMap"; 
 
 function LoadPage() {
-    const [isplay, setisplay] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [problems, setProblems] = useState([]);
     const [userCount, setUserCount] = useState(0); 
 
@@ -22,8 +22,7 @@ function LoadPage() {
                 const problemsData = await problemsRes.json();
                 const usersData = await usersRes.json();
 
-                // --- DÜZELTME BURADA ---
-                // Haritayı çökerten (NaN) verileri temizliyoruz
+                // Harita verisi için validasyon (Latitude/Longitude kontrolü)
                 const validProblems = problemsData.filter(item => 
                     item.Latitude != null && 
                     item.Longitude != null && 
@@ -31,11 +30,11 @@ function LoadPage() {
                     !isNaN(parseFloat(item.Longitude))
                 );
 
-                setProblems(validProblems); // Sadece sağlam verileri gönder
+                setProblems(validProblems); 
                 setUserCount(usersData.length); 
 
             } catch (error) {
-                console.error("Hata:", error);
+                console.error("Veri yükleme hatası:", error);
             }
         };
         fetchData();
@@ -46,12 +45,12 @@ function LoadPage() {
             <div className="navbar">
                 <span className="headText">Kampüs Gözü</span>
                 <button 
-                    className={`buton ${isplay? "acik":""}`} 
-                    onClick={() => setisplay(!isplay)}
+                    className={`buton ${isMenuOpen ? "acik" : ""}`} 
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                     <img src={list} alt="Menü" width="20" />
                 </button>
-                <ul className={`slide-panel ${isplay ? "acik" : ""}`}>
+                <ul className={`slide-panel ${isMenuOpen ? "acik" : ""}`}>
                     <li><Link className="link" to='/login'>Giriş yap</Link></li>
                     <li><Link className="link" to='/signin'>Kayıt Ol</Link></li>
                 </ul>
@@ -67,7 +66,6 @@ function LoadPage() {
                     <span className="bottomHeadText">Kampüsün Nabzını Tut</span>
                     <p className="section-desc">Kampüsteki sorunları harita üzerinde anlık görüntüleyin.</p>
                     <div style={{ marginTop: "20px", height: "400px" }}>
-                        {/* Harita bileşeni artık sadece sağlam verilerle çalışacak */}
                         <Map sorunlar={problems} />
                     </div>
                 </div>
@@ -115,7 +113,7 @@ function LoadPage() {
                 <footer className="page-footer">
                     <div className="footer-content">
                         <p>&copy; 2026 Kampüs Gözü - Tüm Hakları Saklıdır.</p>
-                        <p>Geliştirici: <a href="https://github.com/bilalst67" target="_blank" rel="noreferrer">Bilal Sarış (@bilalst67)</a></p>
+                        <p>Geliştirici: <a href="https://github.com/bilalst67" target="_blank" rel="noreferrer">Bilal Sarıtaş (@bilalst67)</a></p>
                     </div>
                 </footer>
             </div>

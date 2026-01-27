@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, Rectangle } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import '../css/map.css';
 
-// --- İKON DÜZELTME ---
+// Leaflet varsayılan ikon ayarları
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
+
+const DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow,
     iconSize: [25, 41],
@@ -15,9 +16,7 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// 3. EKSİK DÜZELTİLDİ: onKonumSec parametreye eklendi
 function Map({ sorunlar, onKonumSec }) {
-
     const kampusSiniri = [
         [40.2170, 28.8570], 
         [40.2380, 28.8870]
@@ -25,20 +24,18 @@ function Map({ sorunlar, onKonumSec }) {
     
     const [tiklananKonum, setTiklananKonum] = useState(null); 
 
-    function TiklamaYakala() {
+    // Harita tıklama olaylarını dinleyen alt bileşen
+    function MapEvents() {
         useMapEvents({
             click: (e) => {
                 const tiklananNokta = e.latlng;
                 const sinirKutusu = L.latLngBounds(kampusSiniri);
 
                 if (sinirKutusu.contains(tiklananNokta)) {
-
                     setTiklananKonum([tiklananNokta.lat, tiklananNokta.lng]);
-
                     if (onKonumSec) {
                         onKonumSec(tiklananNokta.lat, tiklananNokta.lng);
                     }
-
                 } else {
                     alert("Lütfen sadece kampüs sınırları içini seçiniz!");
                 }
@@ -63,16 +60,14 @@ function Map({ sorunlar, onKonumSec }) {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 
-                {/* Sınır Çizgisi */}
                 <Rectangle 
                     bounds={kampusSiniri} 
                     pathOptions={{ color: '#ff0000', weight: 2, fillOpacity: 0.0 }} 
                 />
 
-                {/* Tıklama olayını dinle */}
-                <TiklamaYakala />
+                <MapEvents />
 
-                {/* A. TIKLANAN YERİ GÖSTER (Yeni Sorun Ekleme Modu) */}
+                {/* Seçilen Konum İşaretçisi */}
                 {tiklananKonum && (
                     <Marker position={tiklananKonum}>
                         <Popup>
@@ -82,7 +77,7 @@ function Map({ sorunlar, onKonumSec }) {
                     </Marker>
                 )} 
 
-                {/* B. VERİTABANINDAN GELEN SORUNLARI GÖSTER (Görüntüleme Modu) */}
+                {/* Kayıtlı Sorun İşaretçileri */}
                 {sorunlar && sorunlar.map((sorun) => (
                     <Marker 
                         key={sorun.SorunID || Math.random()}
@@ -96,7 +91,6 @@ function Map({ sorunlar, onKonumSec }) {
                         </Popup>
                     </Marker>
                 ))}
-
             </MapContainer>
         </div>
     );

@@ -14,12 +14,11 @@
 }
 
 .profile-container {
-    background-color: #ffffff; /* Tam beyaz kart */
+    background-color: #ffffff;
     width: 100%;
     max-width: 1000px;
     border-radius: 24px;
     padding: 35px;
-    /* Yüzen efekt */
     box-shadow: 0 25px 50px rgba(0,0,0,0.25);
 }
 
@@ -34,11 +33,7 @@
     gap: 20px;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+.header-left { display: flex; align-items: center; gap: 20px; }
 
 .profile-avatar {
     width: 90px;
@@ -52,7 +47,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 20px rgba(20, 56, 127, 0.3);
-    border: 4px solid #fff; /* Avatar etrafına beyaz çerçeve */
+    border: 4px solid #fff;
 }
 
 .profile-info h2 { margin: 0; color: #111; font-size: 1.8rem; font-weight: 800; }
@@ -101,12 +96,11 @@
     gap: 30px;
 }
 
-/* --- KART --- */
+/* --- KART TASARIMI --- */
 .problem-card {
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    /* Kartın profilden ayrışması için güçlü gölge */
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     transition: transform 0.3s ease;
     border: 1px solid #eee;
@@ -157,19 +151,18 @@
 .pc-delete-btn:hover { background: #dc3545; color: white; border-color: #dc3545; }
 
 /* Başlık */
-.section-title {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
-}
+.section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
 .section-title h3 { font-size: 1.5rem; color: #14387f; font-weight: 800; }
 
 .add-new-btn {
     background: #14387f; color: white; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; box-shadow: 0 5px 15px rgba(20, 56, 127, 0.2);
 }
 .add-new-btn:hover { transform: translateY(-2px); background: #0f2b63; }
-/* --- AYARLAR BUTONU --- */
+
+/* Ayarlar Butonu */
 .settings-action-btn {
     text-decoration: none;
-    background-color: #6c757d; /* Gri tonu (Nötr işlem) */
+    background-color: #6c757d;
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
@@ -185,28 +178,16 @@
 }
 
 .settings-action-btn:hover {
-    background-color: #5a6268; /* Hoverda biraz koyulaşır */
+    background-color: #5a6268;
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(0,0,0,0.15);
 }
 
-.settings-action-btn:active {
-    transform: translateY(0);
-}
+.settings-action-btn:active { transform: translateY(0); }
 
-/* Mobil uyumluluk için (Eğer butonlar sığmazsa alt alta geçsin) */
 @media (max-width: 600px) {
-    .header-right {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .settings-action-btn {
-        width: 100%; /* Mobilde tam genişlik */
-        justify-content: center;
-    }
-}
-/* MOBİL */
-@media (max-width: 600px) {
+    .header-right { flex-wrap: wrap; justify-content: center; }
+    .settings-action-btn { width: 100%; justify-content: center; }
     .profile-container { padding: 20px; }
     .profile-header { flex-direction: column; text-align: center; }
     .header-left { flex-direction: column; }

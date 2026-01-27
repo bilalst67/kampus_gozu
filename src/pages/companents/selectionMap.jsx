@@ -1,22 +1,21 @@
 import { useState, useRef, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, Rectangle } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-// --- İKON AYARLARI ---
+// Leaflet varsayılan ikon ayarları
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
+
+const DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41]
 });
 L.Marker.prototype.options.icon = DefaultIcon;
-// ---------------------
 
 function SelectionMap({ onKonumSec }) {
-    
     const kampusSiniri = [
         [40.2170, 28.8570], 
         [40.2380, 28.8870]
@@ -30,6 +29,7 @@ function SelectionMap({ onKonumSec }) {
             click: (e) => {
                 const tiklananNokta = e.latlng;
                 const sinirKutusu = L.latLngBounds(kampusSiniri);
+                
                 if (sinirKutusu.contains(tiklananNokta)) {
                     setPosition(tiklananNokta);
                     if (onKonumSec) onKonumSec(tiklananNokta.lat, tiklananNokta.lng);
@@ -41,6 +41,7 @@ function SelectionMap({ onKonumSec }) {
         return null;
     }
 
+    // Sürükleme (Drag) olayları
     const eventHandlers = useMemo(
         () => ({
             dragend() {
@@ -48,13 +49,17 @@ function SelectionMap({ onKonumSec }) {
                 if (marker != null) {
                     const yeniKonum = marker.getLatLng();
                     const sinirKutusu = L.latLngBounds(kampusSiniri);
-                    
-                    setPosition(yeniKonum);
-                    if (onKonumSec) onKonumSec(yeniKonum.lat, yeniKonum.lng);
+                    if (sinirKutusu.contains(yeniKonum)) {
+                        setPosition(yeniKonum);
+                        if (onKonumSec) onKonumSec(yeniKonum.lat, yeniKonum.lng);
+                    } else {
+                        alert("Lütfen kampüs sınırları dışına çıkmayınız!");
+                        marker.setLatLng(position);
+                    }
                 }
             },
         }),
-        [onKonumSec],
+        [onKonumSec, position],
     );
 
     return (
@@ -66,7 +71,6 @@ function SelectionMap({ onKonumSec }) {
                 minZoom={14.5}
                 scrollWheelZoom={true} 
                 dragging={true}
-                // Harita bileşeni de %100 olmalı
                 style={{ height: "100%", width: "100%" }}
             >
                 <TileLayer
@@ -89,7 +93,7 @@ function SelectionMap({ onKonumSec }) {
                         ref={markerRef}
                     >
                         <Popup minWidth={90}>
-                            <span>Seçildi!</span>
+                            <span>Konum Seçildi</span>
                         </Popup>
                     </Marker>
                 )}

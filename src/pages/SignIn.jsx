@@ -5,119 +5,71 @@ import { showToast } from '../utils/customAlert';
 
 function SignIn() {
     const navigate = useNavigate();
-    const [newUser, setNewUser] = useState({ AdSoyad: "", Email: "", Sifre: "" })
+    const [newUser, setNewUser] = useState({ 
+        Ad: "", 
+        Soyad: "", 
+        KullaniciAdi: "", 
+        Email: "", 
+        Sifre: "" 
+    });
     const [errors, setErrors] = useState({})
 
-    // --- TEKİL ALAN DOĞRULAMA FONKSİYONU ---
-    // Bu fonksiyon sadece kendisine gönderilen alanı (name) kontrol eder ve hata mesajı döndürür.
     const checkValidation = (name, value) => {
         let error = "";
         const cleanValue = value ? value.trim() : "";
-
-        // Regex Tanımları
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*.?])/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@(ogr\.uludag\.edu\.tr|uludag\.edu\.tr)$/;
 
         switch (name) {
-            case "AdSoyad":
-                if (!cleanValue) error = "Ad Soyad alanı boş bırakılamaz.";
-                else if (cleanValue.length < 3) error = "Ad Soyad en az 3 karakter olmalıdır.";
-                else if (cleanValue.length > 50) error = "Ad Soyad çok uzun.";
+            case "Ad":
+                if (cleanValue.length < 2) error = "Ad en az 2 karakter olmalı.";
                 break;
-
+            case "Soyad":
+                if (cleanValue.length < 2) error = "Soyad en az 2 karakter olmalı.";
+                break;
+            case "KullaniciAdi":
+                if (cleanValue.length < 3) error = "Kullanıcı adı en az 3 karakter olmalı.";
+                break;
             case "Email":
                 if (!cleanValue) {
-                    error = "E-posta alanı boş bırakılamaz.";
-                } else if (cleanValue.length > 100) {
-                    error = "E-posta çok uzun.";
-                } else if (!emailRegex.test(cleanValue)) {
-                    error = "Lütfen geçerli bir e-posta adresi giriniz.";
-                } else {
-                    const parts = cleanValue.split('@');
-                    if (parts.length === 2) {
-                        const domain = parts[1].toLowerCase();
-                        const allowedDomains = ['uludag.edu.tr', 'ogr.uludag.edu.tr', 'gmail.com'];
-                        
-                        if (domain.indexOf('.') === -1) {
-                            error = "E-posta uzantısı eksik.";
-                        } else if (!allowedDomains.includes(domain)) {
-                            error = "Sadece üniversite veya Gmail adresi kabul edilmektedir.";
-                        } else if (domain.includes('tempmail') || domain.includes('10minutemail')) {
-                            error = "Geçici mail adresleri yasaktır.";
-                        }
-                    }
+                    error = "E-posta boş olamaz.";
+                } else if (!schoolEmailRegex.test(cleanValue)) {
+                    error = "Sadece '@uludag.edu.tr' veya '@ogr.uludag.edu.tr' uzantılı mailler kabul edilir.";
                 }
                 break;
-
             case "Sifre":
-                if (!value) {
-                    error = "Şifre alanı boş bırakılamaz.";
-                } else if (value.length < 8) {
-                    error = "Şifre en az 8 karakter olmalıdır.";
-                } else if (value.length > 30) {
-                    error = "Şifre çok uzun.";
-                } else if (!passwordRegex.test(value)) {
-                    let missing = [];
-                    if (!/(?=.*[A-Z])/.test(value)) missing.push("1 Büyük Harf");
-                    if (!/(?=.*[a-z])/.test(value)) missing.push("1 Küçük Harf");
-                    if (!/(?=.*[0-9])/.test(value)) missing.push("1 Rakam");
-                    if (!/(?=.*[!@#\$%\^&\*.?])/.test(value)) missing.push("1 Sembol (!@#$%.?)");
-                    
-                    error = `Eksikleriniz var: ${missing.join(", ")}`;
-                }
-                break;
-                
-            default:
+                if (value.length < 8) error = "Şifre en az 8 karakter olmalı.";
+                else if (!passwordRegex.test(value)) error = "Şifre zayıf (Büyük harf, sayı, sembol).";
                 break;
         }
-
         return error;
     };
 
-    // Input değiştiğinde (Hata varsa siler, kullanıcı düzeltiyor demektir)
     const handleChange = (e) => {
         const { name, value } = e.target;
         setNewUser({ ...newUser, [name]: value });
-
-        // Kullanıcı yazmaya başladığında hatayı kaldıralım ki rahatsız etmesin
-        if (errors[name]) {
-            setErrors({ ...errors, [name]: null });
-        }
+        if (errors[name]) setErrors({ ...errors, [name]: null });
     };
 
     const handleBlur = (e) => {
         const { name, value } = e.target;
         const errorMsg = checkValidation(name, value);
-        
-        // Hata varsa state'e ekle, yoksa temizle
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            [name]: errorMsg
-        }));
-    };
-
-    // Form Gönderilirken (Tüm alanları kontrol et)
-    const validateFormOnSubmit = () => {
-        const newErrors = {};
-        let isValid = true;
-
-        // Tüm alanları tek tek kontrol et
-        Object.keys(newUser).forEach(key => {
-            const error = checkValidation(key, newUser[key]);
-            if (error) {
-                newErrors[key] = error;
-                isValid = false;
-            }
-        });
-
-        setErrors(newErrors);
-        return isValid;
+        setErrors(prev => ({ ...prev, [name]: errorMsg }));
     };
 
     const sigin = async (e) => {
         e.preventDefault();
-        
-        if (!validateFormOnSubmit()) return;
+        const formErrors = {};
+        Object.keys(newUser).forEach(key => {
+            const error = checkValidation(key, newUser[key]);
+            if (error) formErrors[key] = error;
+        });
+
+        if (Object.keys(formErrors).length > 0) {
+            setErrors(formErrors);
+            showToast("Lütfen formu kurallara uygun doldurun.", "warning");
+            return;
+        }
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/newuser`, {
@@ -129,13 +81,12 @@ function SignIn() {
             const result = await response.json();
 
             if (response.ok) {
-                showToast("Hoş geldiniz, şimdi giriş yapabilirsiniz.", 'success');
-                navigate("/login"); 
+                showToast("Kayıt Başarılı! Doğrulama kodu gönderildi.", 'success');
+                navigate(`/verify?email=${newUser.Email}`); 
             } else {
                 showToast("Hata: " + (result.message || "Kayıt başarısız."), 'error');
             }
         } catch (error) {
-            console.log(error);
             showToast("Sunucu bağlantı hatası!", 'error');
         }
     }
@@ -145,56 +96,37 @@ function SignIn() {
             <div className="signinCard">
                 <h1 className="signinBaslik">Kampüs Gözü</h1>
                 <p className="signinAltBaslik">Aramıza Katılın</p>
-                
                 <form onSubmit={sigin} noValidate>
                     
-                    {/* Ad Soyad */}
                     <div className='input-group'>
-                        <input
-                            className={`signinInput ${errors.AdSoyad ? 'input-error' : ''}`}
-                            type="text"
-                            name="AdSoyad"
-                            placeholder="Adınız Soyadınız"
-                            value={newUser.AdSoyad}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.AdSoyad && <small className="error-text">⚠️ {errors.AdSoyad}</small>}
+                        <input className="signinInput" type="text" name="Ad" placeholder="Adınız" value={newUser.Ad} onChange={handleChange} onBlur={handleBlur} />
+                        {errors.Ad && <small className="error-text">{errors.Ad}</small>}
                     </div>
 
-                    {/* Email */}
                     <div className='input-group'>
-                        <input
-                            className={`signinInput ${errors.Email ? 'input-error' : ''}`}
-                            type="email"
-                            name="Email"
-                            placeholder="Email Adresiniz"
-                            value={newUser.Email}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.Email && <small className="error-text">⚠️ {errors.Email}</small>}
+                        <input className="signinInput" type="text" name="Soyad" placeholder="Soyadınız" value={newUser.Soyad} onChange={handleChange} onBlur={handleBlur} />
+                        {errors.Soyad && <small className="error-text">{errors.Soyad}</small>}
                     </div>
 
-                    {/* Şifre */}
                     <div className='input-group'>
-                        <input
-                            className={`signinInput ${errors.Sifre ? 'input-error' : ''}`}
-                            type="password"
-                            name="Sifre"
-                            placeholder="Şifreniz"
-                            value={newUser.Sifre}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                        />
-                        {errors.Sifre && <small className="error-text" style={{color: '#dc3545'}}>⚠️ {errors.Sifre}</small>}
+                        <input className="signinInput" type="text" name="KullaniciAdi" placeholder="Kullanıcı Adı" value={newUser.KullaniciAdi} onChange={handleChange} onBlur={handleBlur} />
+                        {errors.KullaniciAdi && <small className="error-text">{errors.KullaniciAdi}</small>}
+                    </div>
+
+                    <div className='input-group'>
+                        <input className="signinInput" type="email" name="Email" placeholder="Email (ogr.uludag.edu.tr)" value={newUser.Email} onChange={handleChange} onBlur={handleBlur} />
+                        {errors.Email && <small className="error-text">{errors.Email}</small>}
+                    </div>
+
+                    <div className='input-group'>
+                        <input className="signinInput" type="password" name="Sifre" placeholder="Şifre" value={newUser.Sifre} onChange={handleChange} onBlur={handleBlur} />
+                        {errors.Sifre && <small className="error-text">{errors.Sifre}</small>}
                     </div>
 
                     <button type='submit' className='signinButton'>KAYIT OL</button>
-
+                    
                     <div className="signinFooter">
-                        <span className="signinRegText">Zaten hesabınız var mı?</span>
-                        <Link className="signinLink" to='/login'>Giriş Yapın</Link>
+                        <Link className="signinLink" to='/login'>Zaten hesabınız var mı? Giriş Yapın</Link>
                     </div>
                 </form>
             </div>

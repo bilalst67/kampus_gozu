@@ -8,7 +8,6 @@ function AdminPage() {
     const [problems, setProblems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("pending");
-    
     const [expandedRows, setExpandedRows] = useState({});
 
     const navigate = useNavigate();
@@ -40,20 +39,12 @@ function AdminPage() {
         fetchAdminData();
     }, []);
 
-    // Satır aç/kapa fonksiyonu
     const toggleRow = (id) => {
-        setExpandedRows(prev => ({
-            ...prev,
-            [id]: !prev[id] // Varsa tersine çevir, yoksa true yap
-        }));
+        setExpandedRows(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
     const handleStatusChange = async (id, newStatus) => {
-        const onay = await showConfirm(
-            "Durum Güncellenecek",
-            `Bu sorunu '${newStatus}' olarak işaretlemek istiyor musunuz?`
-        );
-
+        const onay = await showConfirm("Durum Güncellenecek", `Bu sorunu '${newStatus}' olarak işaretlemek istiyor musunuz?`);
         if (!onay) return;
 
         try {
@@ -68,46 +59,32 @@ function AdminPage() {
             });
 
             if (response.ok) {
-                showToast(`Durum: ${newStatus}`, "success");
-                setProblems(problems.map(p => 
-                    p.SorunID === id ? { ...p, Durum: newStatus } : p
-                ));
-            } else {
-                showToast("Güncelleme başarısız.", "error");
+                showToast(`Durum güncellendi: ${newStatus}`, "success");
+                setProblems(problems.map(p => p.SorunID === id ? { ...p, Durum: newStatus } : p));
             }
         } catch (error) {
             console.error(error);
+            showToast("İşlem başarısız oldu.", "error");
         }
     };
-    const handleDelete = async (id) => {
-        const onay = await showConfirm(
-            "Sorun Reddedilecek ve Silinecek",
-            "Bu işlem geri alınamaz. Sorunu kalıcı olarak silmek istediğinize emin misiniz?"
-        );
 
+    const handleDelete = async (id) => {
+        const onay = await showConfirm("Silinecek", "Bu kayıt kalıcı olarak silinsin mi?");
         if (!onay) return;
 
         try {
             const token = localStorage.getItem("token");
-            // DELETE isteği atıyoruz
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/problem/${id}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+                headers: { "Authorization": `Bearer ${token}` }
             });
 
             if (response.ok) {
-                showToast("Sorun reddedildi ve silindi.", "success");
-                
-                // Listeden silinen elemanı çıkar (Sayfayı yenilemeye gerek kalmaz)
-                setProblems(prevProblems => prevProblems.filter(p => p.SorunID !== id));
-            } else {
-                showToast("Silme işlemi başarısız.", "error");
+                showToast("Sorun başarıyla silindi.", "success");
+                setProblems(prev => prev.filter(p => p.SorunID !== id));
             }
         } catch (error) {
             console.error("Silme hatası:", error);
-            showToast("Sunucu hatası oluştu.", "error");
         }
     };
 
@@ -122,26 +99,19 @@ function AdminPage() {
     return (
         <div className="admin-body">
             <div className="admin-container">
-                
                 <div className="admin-header">
                     <h1>Yönetim Paneli</h1>
                     <div className="header-actions">
                         <Link to="/anasayfa" className="back-link">← Siteye Dön</Link>
-                        <span className="admin-badge">Admin Yetkisi</span>
+                        <span className="admin-badge">Admin</span>
                     </div>
                 </div>
 
                 <div className="admin-tabs">
-                    <button 
-                        className={`tab-btn ${activeTab === 'pending' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('pending')}
-                    >
-                        Bekleyen Onaylar ({pendingCount})
+                    <button className={`tab-btn ${activeTab === 'pending' ? 'active' : ''}`} onClick={() => setActiveTab('pending')}>
+                        Bekleyenler ({pendingCount})
                     </button>
-                    <button 
-                        className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('all')}
-                    >
+                    <button className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`} onClick={() => setActiveTab('all')}>
                         Tüm Kayıtlar
                     </button>
                 </div>
@@ -150,10 +120,10 @@ function AdminPage() {
                     <table className="admin-table">
                         <thead>
                             <tr>
-                                <th style={{width: "50px"}}>Detay</th> {/* Açma butonu için sütun */}
+                                <th style={{width: "50px"}}>Detay</th>
                                 <th>ID</th>
                                 <th>Görsel</th>
-                                <th>Başlık / Konum</th>
+                                <th>Başlık</th>
                                 <th>Kullanıcı</th>
                                 <th>Durum</th>
                                 <th>İşlemler</th>
@@ -161,103 +131,56 @@ function AdminPage() {
                         </thead>
                         <tbody>
                             {filteredProblems.length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" style={{textAlign:"center", padding:"20px"}}>
-                                        Kayıt bulunamadı.
-                                    </td>
-                                </tr>
+                                <tr><td colSpan="7" style={{textAlign:"center", padding:"20px"}}>Kayıt bulunamadı.</td></tr>
                             ) : (
                                 filteredProblems.map((sorun) => (
                                     <>
-                                        {/* ANA SATIR */}
                                         <tr key={sorun.SorunID} className={expandedRows[sorun.SorunID] ? "row-expanded" : ""}>
                                             <td style={{textAlign: "center"}}>
-                                                <button 
-                                                    className={`btn-toggle-row ${expandedRows[sorun.SorunID] ? 'open' : ''}`}
-                                                    onClick={() => toggleRow(sorun.SorunID)}
-                                                >
-                                                    ▶
-                                                </button>
+                                                <button className={`btn-toggle-row ${expandedRows[sorun.SorunID] ? 'open' : ''}`} onClick={() => toggleRow(sorun.SorunID)}>▶</button>
                                             </td>
                                             <td>#{sorun.SorunID}</td>
                                             <td>
                                                 {sorun.FotografUrl ? (
                                                     <img 
                                                         src={
-                                                                sorun.FotografUrl.startsWith('http') 
-                                                                    ? sorun.FotografUrl  // Eğer link http ile başlıyorsa (Cloudinary), olduğu gibi koy.
-                                                                    : `${import.meta.env.VITE_API_URL}${sorun.FotografUrl}` // Değilse sunucu adresini ekle.
-                                                            }
-                                                        alt="thumb" 
-                                                        className="table-img"
+                                                            sorun.FotografUrl.startsWith('http') 
+                                                                ? sorun.FotografUrl 
+                                                                : `${import.meta.env.VITE_API_URL}${sorun.FotografUrl}`
+                                                        }
+                                                        alt="preview" className="table-img"
                                                     />
-                                                ) : (
-                                                    <span className="no-img">-</span>
-                                                )}
+                                                ) : <span>-</span>}
                                             </td>
                                             <td>
                                                 <strong>{sorun.Baslik}</strong>
                                                 <p className="sub-text">{sorun.KonumMetni}</p>
                                             </td>
-                                            <td>
-                                                {sorun.AdSoyad}
-                                                <p className="sub-text">{sorun.Email}</p>
-                                            </td>
-                                            <td>
-                                                <span className={`status-pill ${getStatusClass(sorun.Durum)}`}>
-                                                    {sorun.Durum || 'Beklemede'}
-                                                </span>
-                                            </td>
+                                            <td>{sorun.AdSoyad}</td>
+                                            <td><span className={`status-pill ${getStatusClass(sorun.Durum)}`}>{sorun.Durum}</span></td>
                                             <td>
                                                 <div className="action-buttons">
-                                                    {/* Onayla Butonu: Durum Beklemede, Onay Bekliyor veya Boş ise göster */}
-                                                    {(sorun.Durum === 'Beklemede' || sorun.Durum === 'Onay Bekliyor' || !sorun.Durum) && (
-                                                        <button 
-                                                            className="btn-approve"
-                                                            onClick={() => handleStatusChange(sorun.SorunID, "Onaylandı")}
-                                                            title="Onayla"
-                                                        >
-                                                            ✅ Onayla
-                                                        </button>
+                                                    {(sorun.Durum === 'Beklemede' || !sorun.Durum) && (
+                                                        <button className="btn-approve" title="Onayla" onClick={() => handleStatusChange(sorun.SorunID, "Onaylandı")}>✅</button>
                                                     )}
-
                                                     {sorun.Durum === 'Onaylandı' && (
-                                                        <button 
-                                                            className="btn-solve"
-                                                            onClick={() => handleStatusChange(sorun.SorunID, "Çözüldü")}
-                                                            title="Çözüldü"
-                                                        >
-                                                            🏆 Çözüldü
-                                                        </button>
+                                                        <button className="btn-solve" title="Çözüldü Olarak İşaretle" onClick={() => handleStatusChange(sorun.SorunID, "Çözüldü")}>🏆</button>
                                                     )}
-                                                    
                                                     {sorun.Durum !== 'Çözüldü' && (
-                                                        <button 
-                                                            className="btn-reject"
-                                                            onClick={() => handleDelete(sorun.SorunID)}
-                                                            title="Reddet ve Sil"
-                                                        >
-                                                            ❌ Reddet
-                                                        </button>
+                                                        <button className="btn-reject" title="Reddet ve Sil" onClick={() => handleDelete(sorun.SorunID)}>❌</button>
                                                     )}
                                                 </div>
                                             </td>
                                         </tr>
-
-                                        {/* DETAY SATIRI (Sadece butona basıldıysa görünür) */}
                                         {expandedRows[sorun.SorunID] && (
                                             <tr className="detail-row">
                                                 <td colSpan="7">
                                                     <div className="detail-content">
-                                                        <div className="detail-info">
-                                                            <h4>📌 Sorun Açıklaması</h4>
-                                                            <p>{sorun.Aciklama || "Açıklama girilmemiş."}</p>
-                                                            
-                                                            <div className="meta-info">
-                                                                <span><strong>📅 Tarih:</strong> {new Date(sorun.Tarih).toLocaleDateString('tr-TR')}</span>
-                                                                <span><strong>👍 Destek Sayısı:</strong> {sorun.DestekSayisi}</span>
-                                                                <span><strong>📍 Koordinat:</strong> {sorun.Latitude}, {sorun.Longitude}</span>
-                                                            </div>
+                                                        <p><strong>Açıklama:</strong> {sorun.Aciklama}</p>
+                                                        <div className="meta-info">
+                                                            <span>📅 {new Date(sorun.Tarih).toLocaleDateString('tr-TR')}</span>
+                                                            <span>📍 {sorun.Latitude}, {sorun.Longitude}</span>
+                                                            <span>📧 {sorun.Email}</span>
                                                         </div>
                                                     </div>
                                                 </td>

@@ -7,39 +7,39 @@ body {
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
-    /* Modern Font Ailesi */
     font-family: 'Segoe UI', 'Roboto', 'Helvetica', sans-serif; 
     margin: 0; 
     overflow-x: hidden;
+    width: 100%;
+    position: relative;
     line-height: 1.6;
 }
 
-.loadPage {
-    text-align: center;
-}
+.loadPage { text-align: center; }
 
-/* --- 1. NAVBAR --- */
+/* --- NAVBAR --- */
 .navbar {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Mobilde içerik dağılımı */
+    justify-content: space-between;
     height: 70px;
     width: 90%;
     max-width: 1200px;
     
     position: fixed; 
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
 
+    z-index: 100;
     border-radius: 16px 16px 0 16px; 
-    background-color: rgba(20, 56, 127, 0.85); /* Daha transparan */
-    backdrop-filter: blur(12px); /* Buzlu cam efekti */
+    background-color: rgba(20, 56, 127, 0.85);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     color: #f4f4f4;
     padding: 0 25px; 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Yumuşak gölge */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
 }
 
@@ -74,19 +74,18 @@ body {
     max-width: 600px;
 }
 
-/* --- MOBİL UYUMLULUK (Hero) --- */
 @media (max-width: 768px) {
     .hero-bolumu h1 { font-size: 2.2rem; }
     .hero-bolumu p { font-size: 1rem; }
     .navbar { width: 95%; padding: 0 15px; height: 60px; }
 }
 
-/* --- MEVCUT İÇERİK --- */
+/* --- İÇERİK BÖLÜMÜ --- */
 .example-use {
     margin: 0 auto; 
     width: 100%; 
     min-height: 100vh; 
-    background-color: #f8f9fa; /* Göz yormayan kırık beyaz */
+    background-color: #f8f9fa;
     color: #333;
     border-radius: 30px 30px 0 0;
     padding-top: 60px;
@@ -96,13 +95,12 @@ body {
     box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
 }
 
-/* --- KARTLAR (Grid Yapısı) --- */
 .steps-grid {
     display: flex;
     justify-content: center;
     gap: 30px;
     margin-top: 40px;
-    flex-wrap: wrap; /* Mobilde alt alta geçsin */
+    flex-wrap: wrap;
     padding: 0 20px;
 }
 
@@ -111,7 +109,7 @@ body {
     padding: 30px;
     border-radius: 20px;
     width: 280px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); /* Çok soft gölge */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(0,0,0,0.05);
 }
@@ -127,29 +125,35 @@ body {
     display: block;
 }
 
-.step-card h3 {
-    color: #14387f;
-    margin-bottom: 10px;
-}
+.step-card h3 { color: #14387f; margin-bottom: 10px; }
 
 /* --- YAN PANEL --- */
 .slide-panel {
-    position: absolute;
-    top: 100%;
+    position: fixed; 
+    top: 70px;
     right: 0;
     width: 250px;
     background-color: rgba(20, 56, 127, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    padding: 20px 0;
     box-shadow: -4px 10px 30px rgba(0, 0, 0, 0.2);
-    border-radius: 0 0 15px 15px;
-    transform: translateX(150%);
-    transition: transform 0.4s cubic-bezier(0.15, 0.85, 0.30, 1.25);
+    border-radius: 15px 0 0 15px;
     z-index: 99;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
-.slide-panel.acik { transform: translateX(0); }
+.slide-panel.acik {
+    visibility: visible;
+    opacity: 1; 
+    transform: translateX(0);
+    transition: 
+        visibility 0.15s,
+        opacity 0.15s ease-in,
+        transform 0.5s cubic-bezier(0.15, 0.85, 0.30, 1.25);
+}
 
 .buton {
     background: none;
@@ -157,7 +161,7 @@ body {
     cursor: pointer;
     z-index: 101;
     transition: transform 0.4s ease-in-out;
-    filter: invert(1); /* İkonu beyaz yapmak için */
+    filter: invert(1);
     padding: 5px;
 }
 
@@ -182,7 +186,7 @@ ul { list-style: none; padding: 0; margin: 0; }
     transform: translateX(-5px);
 }
 
-/* --- İSTATİSTİK BANDI --- */
+/* --- İSTATİSTİKLER --- */
 .stats-banner {
     background: linear-gradient(135deg, #14387f, #0a2357);
     color: white;
@@ -208,10 +212,7 @@ ul { list-style: none; padding: 0; margin: 0; }
     margin-bottom: 10px;
 }
 
-.stat-label {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
+.stat-label { font-size: 1.1rem; opacity: 0.9; }
 
 /* --- FOOTER --- */
 .page-footer {

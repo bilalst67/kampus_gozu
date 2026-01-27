@@ -14,15 +14,14 @@
 }
 
 .np-card {
-    background-color: #ffffff; /* Tam beyaz olsun, cam efekti göz yorabilir */
+    background-color: #ffffff;
     width: 100%;
     max-width: 800px;
     border-radius: 24px;
     padding: 40px;
-    /* Kartı arka plandan iyice ayıran gölge */
     box-shadow: 0 25px 50px rgba(0,0,0,0.3);
     animation: slideUp 0.6s ease-out;
-    border-top: 8px solid #edc500; /* Sarı Çizgi Vurgusu */
+    border-top: 8px solid #edc500;
 }
 
 /* Header */
@@ -48,9 +47,9 @@
 .np-input, .np-textarea {
     width: 100%;
     padding: 15px;
-    border: 2px solid #eef2f6; /* Çok açık gri border */
+    border: 2px solid #eef2f6;
     border-radius: 12px;
-    background: #f8f9fa; /* Hafif gri zemin */
+    background: #f8f9fa;
     font-size: 1rem;
     font-family: inherit;
     box-sizing: border-box;
@@ -67,16 +66,13 @@
 
 .np-textarea { min-height: 120px; resize: vertical; }
 
-/* --- DOSYA YÜKLEME ALANI (GÜNCELLENDİ) --- */
-/* Input type=file stilini özelleştiriyoruz */
-.file-group {
-    margin-bottom: 25px;
-}
+/* Dosya Yükleme */
+.file-group { margin-bottom: 25px; }
 .file-input {
     width: 100%;
     padding: 12px;
     background: #f1f3f5;
-    border: 2px dashed #14387f; /* Kesikli çizgi */
+    border: 2px dashed #14387f;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s;
@@ -88,11 +84,11 @@
 
 .file-input:hover {
     background: #e9ecef;
-    border-color: #edc500; /* Hover olunca sarı border */
+    border-color: #edc500;
     color: #14387f;
 }
 
-/* Harita */
+/* Harita Bölümü */
 .map-section { margin-bottom: 25px; }
 .section-label { display: block; font-weight: 700; margin-bottom: 12px; color: #333; }
 
@@ -126,7 +122,7 @@
     background: linear-gradient(135deg, #1e4bb5, #2a5bb5);
 }
 
-/* MOBİL */
+/* Mobil Uyumluluk */
 @media (max-width: 600px) {
     .np-card { padding: 25px 20px; }
     .form-row { flex-direction: column; gap: 0; margin-bottom: 0; }

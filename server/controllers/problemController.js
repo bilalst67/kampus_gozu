@@ -1,323 +1,224 @@
 const { pool } = require('../config/db');
+const fs = require('fs');
+const path = require('path');
 require("dotenv").config();
 
-// Veri tabanından gelen veriyi Frontend'in anlayacağı şekle çeviren fonksiyon
-const mapUser = (row) => {
+const mapProblem = (row) => {
     return {
-        // Kullanıcı Bilgileri
-        KullaniciID: row.kullaniciid,
-        AdSoyad: row.adsoyad, // JOIN sayesinde artık gelecek
-        Email: row.email,
-        Rol: row.rol,
-
-        // Sorun Bilgileri
-        SorunID: row.sorunid,
-        Baslik: row.baslik,
-        Aciklama: row.aciklama,
-        Latitude: row.latitude,
-        Longitude: row.longitude,
-        KonumMetni: row.konummetni,
-        FotografUrl: row.fotografurl,
-        Durum: row.durum,
-        Tarih: row.tarih,
-        
-        // Ekstra Bilgiler
-        DestekSayisi: parseInt(row.desteksayisi || 0),
-        Desteklendi: row.desteklendi || false // Backend'den true/false gelecek
+        KullaniciID: row.KullaniciID,
+        AdSoyad: `${row.Ad} ${row.Soyad}`, 
+        KullaniciAdi: row.KullaniciAdi,
+        Email: row.Email,
+        Rol: row.Rol,
+        SorunID: row.SorunID || null,
+        Baslik: row.Baslik || "",
+        Aciklama: row.Aciklama || "",
+        Latitude: row.Latitude,
+        Longitude: row.Longitude,
+        KonumMetni: row.KonumMetni,
+        FotografUrl: row.FotografUrl,
+        Durum: row.Durum,
+        Tarih: row.Tarih,
+        DestekSayisi: parseInt(row.DestekSayisi || 0),
+        Desteklendi: !!row.Desteklendi
     };
 };
 
-// 1. KULLANICI PROFİLİ VE SORUNLARI (Tek Kişi)
-const userreq = async (req, res) => {
+const userCreateProblem = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        
-        // Kullanıcıyı ve sadece ONUN bildirdiği sorunları getir
-        const query = `
-            SELECT k.*, s.* FROM Kullanicilar k
-            LEFT JOIN Sorunlar s ON k.KullaniciID = s.KullaniciID
-            WHERE k.KullaniciID = $1
-        `;
-
-        const result = await pool.query(query, [id]);
-
-        if (result.rows.length === 0) {
-            return res.json([]);
-        }
-        
-        const formattedData = result.rows.map(mapUser);
-        return res.json(formattedData);
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: err.message });
-    }
-};
-
-// 2. YENİ SORUN OLUŞTURMA
-const userCreateProblem = async (req, res) => {
-    try {
-        // Token'dan gelen ID (AuthMiddleware sayesinde buradadır)
         const KullaniciID = req.user.id; 
-        
         const { Baslik, Aciklama, Latitude, Longitude, KonumMetni } = req.body;
-
-        // Dosya yüklendiyse yolunu al, yüklenmediyse null geç
-        const FotografUrl = req.file ? req.file.path : null;
+        const FotografUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
         if (!Baslik || !Aciklama || !Latitude || !Longitude) {
-            return res.status(400).json({ message: "Başlık, Açıklama ve Konum bilgileri zorunludur!" });
+            res.status(400);
+            throw new Error("Başlık, Açıklama ve Konum alanları zorunludur.");
         }
 
         const query = `
-            INSERT INTO Sorunlar 
-            (KullaniciID, Baslik, Aciklama, Latitude, Longitude, KonumMetni, FotografUrl) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7) 
-            RETURNING * `;
+            INSERT INTO Sorunlar (KullaniciID, Baslik, Aciklama, Latitude, Longitude, KonumMetni, FotografUrl) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-        const result = await pool.query(query, [
-            KullaniciID, 
-            Baslik, 
-            Aciklama, 
-            parseFloat(Latitude), 
-            parseFloat(Longitude), 
-            KonumMetni,
-            FotografUrl
-        ]);
+        const [result] = await pool.query(query, [KullaniciID, Baslik, Aciklama, parseFloat(Latitude), parseFloat(Longitude), KonumMetni, FotografUrl]);
 
-        res.json({
-            message: "Sorun başarıyla bildirildi!",
-            sorun: result.rows[0]
-        });
-
-    } catch (err) {
-        console.error("Sorun ekleme hatası: " + err);
-        res.status(500).json({ message: "Sunucu hatası oluştu." }); 
-    }
+        res.json({ message: "Sorun başarıyla bildirildi.", sorunId: result.insertId });
+    } catch (err) { next(err); }
 }
 
-// 3. Sorun silme
-const userDeleteProblem=async(req,res)=>{
+const userreq = async (req, res, next) => {
     try {
         const { id } = req.params;
-        await pool.query('DELETE FROM Sorunlar WHERE SorunID=$1', [id])
-        res.json({ message: "Sorun Silindi" });
-    } catch (err) {
-        console.error("Hata oluştu :"+err)
-    }
-}
-
-const deleteProblemAdmin = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        // ÖNCE: Silinecek sorunun sahibini ve başlığını bulalım
-        const findQuery = 'SELECT KullaniciID, Baslik FROM Sorunlar WHERE SorunID = $1';
-        const findResult = await pool.query(findQuery, [id]);
-
-        if (findResult.rows.length === 0) {
-            return res.status(404).json({ message: "Sorun bulunamadı" });
+        const query = `
+            SELECT k.Ad, k.Soyad, k.KullaniciAdi, k.Email, k.Rol, s.* FROM Kullanicilar k
+            LEFT JOIN Sorunlar s ON k.KullaniciID = s.KullaniciID
+            WHERE k.KullaniciID = ?
+            ORDER BY s.Tarih DESC
+        `;
+        
+        const [rows] = await pool.query(query, [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Kullanıcı bulunamadı." });
         }
+        res.json(rows.map(mapProblem));
 
-        const { kullaniciid, baslik } = findResult.rows[0];
-
-        // BİLDİRİM EKLE: "Şu başlıklı sorununuz reddedildi."
-        const notificationMsg = `"${baslik}" başlıklı sorununuz admin tarafından reddedildi ve silindi.`;
-        await pool.query(
-            'INSERT INTO Bildirimler (KullaniciID, Mesaj) VALUES ($1, $2)',
-            [kullaniciid, notificationMsg]
-        );
-
-        // SONRA: Sorunu Sil
-        await pool.query('DELETE FROM Sorunlar WHERE SorunID = $1', [id]);
-
-        res.json({ message: "Sorun silindi ve kullanıcıya bildirim gönderildi." });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "İşlem başarısız" });
-    }
+    } catch (err) { next(err); }
 };
 
-// 4. TÜM SORUNLARI LİSTELEME (Anasayfa Akışı İçin)
-const fullProblem = async (req, res) => {
+const fullProblem = async (req, res, next) => {
     try {
-        // İsteği atan kullanıcının ID'sini al (Token varsa)
         const currentUserId = req.user ? req.user.id : 0;
-
         const query = `
-            SELECT 
-                s.*,
-                k.AdSoyad, 
-                k.Rol,
+            SELECT s.*, k.Ad, k.Soyad, k.KullaniciAdi, k.Rol,
                 (SELECT COUNT(*) FROM Destekler d WHERE d.SorunID = s.SorunID) as DestekSayisi,
-                (CASE WHEN EXISTS (SELECT 1 FROM Destekler d2 WHERE d2.SorunID = s.SorunID AND d2.KullaniciID = $1) THEN TRUE ELSE FALSE END) as Desteklendi
+                (SELECT COUNT(*) FROM Destekler d2 WHERE d2.SorunID = s.SorunID AND d2.KullaniciID = ?) as Desteklendi
             FROM Sorunlar s
             JOIN Kullanicilar k ON s.KullaniciID = k.KullaniciID
             ORDER BY DestekSayisi DESC, s.Tarih DESC
         `;
-        
-        // $1 parametresine currentUserId'yi gönderiyoruz
-        const result = await pool.query(query, [currentUserId]);
-        const formattedData = result.rows.map(mapUser);
-        
-        res.json(formattedData); 
-
-    } catch (err) {
-        console.error("Hata oluştu :" + err);
-        res.status(500).json({ message: err.message });
-    }
+        const [rows] = await pool.query(query, [currentUserId]);
+        res.json(rows.map(mapProblem)); 
+    } catch (err) { next(err); }
 }
 
-//5-ADMIN için PROBLEM GĞNCELLEMESI
-const updateProblemStatus = async (req, res) => {
+const userDeleteProblem = async (req, res, next) => {
     try {
-        const { id } = req.params; // Sorun ID
-        const { Durum } = req.body; // Yeni Durum (Örn: "Onaylandı", "Çözüldü", "Reddedildi")
+        const { id } = req.params;
+        const userId = req.user.id; 
 
-        // Durum boş mu kontrol et
-        if (!Durum) {
-            return res.status(400).json({ message: "Durum bilgisi gereklidir." });
+        // Sorun ve fotoğraf verisini çek
+        const [rows] = await pool.query('SELECT KullaniciID, FotografUrl FROM Sorunlar WHERE SorunID = ?', [id]);
+
+        if (rows.length === 0) {
+            res.status(404);
+            throw new Error("Sorun bulunamadı.");
         }
 
-        const query = `
-            UPDATE Sorunlar 
-            SET Durum = $1 
-            WHERE SorunID = $2 
-            RETURNING *
-        `;
+        const sorun = rows[0];
 
-        const result = await pool.query(query, [Durum, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: "Sorun bulunamadı." });
+        // Yetki Kontrolü
+        if (parseInt(sorun.KullaniciID) !== parseInt(userId)) {
+            res.status(403);
+            throw new Error("Bu işlemi yapmaya yetkiniz yok.");
         }
 
-        res.json({ 
-            message: `Sorun durumu '${Durum}' olarak güncellendi.`, 
-            sorun: result.rows[0] 
-        });
+        // Fotoğraf Silme İşlemi
+        if (sorun.FotografUrl) {
+            const dosyaYolu = path.join(__dirname, '..', sorun.FotografUrl);
+            if (fs.existsSync(dosyaYolu)) {
+                fs.unlinkSync(dosyaYolu); 
+            }
+        }
 
-    } catch (err) {
-        console.error("Durum güncelleme hatası:", err);
-        res.status(500).json({ message: "Sunucu hatası." });
-    }
+        await pool.query('DELETE FROM Sorunlar WHERE SorunID = ?', [id]);
+        
+        res.json({ message: "Sorun başarıyla silindi." });
+
+    } catch (err) { next(err); }
+}
+
+const deleteProblemAdmin = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const [findResult] = await pool.query('SELECT KullaniciID, Baslik, FotografUrl FROM Sorunlar WHERE SorunID = ?', [id]);
+
+        if (findResult.length === 0) {
+            res.status(404);
+            throw new Error("Sorun bulunamadı");
+        }
+
+        const { KullaniciID, Baslik, FotografUrl } = findResult[0];
+
+        if (FotografUrl && !FotografUrl.startsWith('http')) {
+            const dosyaYolu = path.join(__dirname, '..', FotografUrl);
+            if (fs.existsSync(dosyaYolu)) {
+                fs.unlinkSync(dosyaYolu);
+            }
+        }
+
+        // Kullanıcıya bildirim gönder
+        const notificationMsg = `"${Baslik}" başlıklı sorununuz reddedildi ve silindi.`;
+        await pool.query('INSERT INTO Bildirimler (KullaniciID, Mesaj) VALUES (?, ?)', [KullaniciID, notificationMsg]);
+
+        await pool.query('DELETE FROM Sorunlar WHERE SorunID = ?', [id]);
+
+        res.json({ message: "Sorun silindi ve kullanıcı bilgilendirildi." });
+    } catch (err) { next(err); }
 };
 
-//6-DESTEKLE FONKSIYONU
-const toggleSupport = async (req, res) => {
+const updateProblemStatus = async (req, res, next) => {
     try {
-        const { id } = req.params; // Sorun ID
-        const KullaniciID = req.user.id; // Token'dan gelen kullanıcı ID
+        const { id } = req.params; 
+        const { Durum } = req.body; 
+        if (!Durum) {
+            res.status(400);
+            throw new Error("Durum bilgisi gerekli.");
+        }
 
-        // 1. Önce kontrol et: Bu kullanıcı bu sorunu daha önce desteklemiş mi?
-        const checkQuery = `SELECT * FROM Destekler WHERE KullaniciID = $1 AND SorunID = $2`;
-        const checkResult = await pool.query(checkQuery, [KullaniciID, id]);
+        const [result] = await pool.query('UPDATE Sorunlar SET Durum = ? WHERE SorunID = ?', [Durum, id]);
+        if (result.affectedRows === 0) {
+            res.status(404);
+            throw new Error("Sorun bulunamadı.");
+        }
+        res.json({ message: `Durum güncellendi: ${Durum}` });
+    } catch (err) { next(err); }
+};
 
+const toggleSupport = async (req, res, next) => {
+    try {
+        const { id } = req.params; 
+        const KullaniciID = req.user.id; 
+
+        const [check] = await pool.query(`SELECT * FROM Destekler WHERE KullaniciID = ? AND SorunID = ?`, [KullaniciID, id]);
         let isLiked = false;
 
-        if (checkResult.rows.length > 0) {
-            // VARSA -> SİL (UNLIKE)
-            await pool.query(`DELETE FROM Destekler WHERE KullaniciID = $1 AND SorunID = $2`, [KullaniciID, id]);
+        if (check.length > 0) {
+            await pool.query(`DELETE FROM Destekler WHERE KullaniciID = ? AND SorunID = ?`, [KullaniciID, id]);
             isLiked = false;
         } else {
-            // YOKSA -> EKLE (LIKE)
-            await pool.query(`INSERT INTO Destekler (KullaniciID, SorunID) VALUES ($1, $2)`, [KullaniciID, id]);
+            await pool.query(`INSERT INTO Destekler (KullaniciID, SorunID) VALUES (?, ?)`, [KullaniciID, id]);
             isLiked = true;
         }
 
-        // 2. Güncel destek sayısını hesapla
-        const countQuery = `SELECT COUNT(*) FROM Destekler WHERE SorunID = $1`;
-        const countResult = await pool.query(countQuery, [id]);
-        
-        // Frontend'e yeni durumu gönder
-        res.json({
-            success: true,
-            isLiked: isLiked, // Artık beğendi mi beğenmedi mi?
-            newCount: parseInt(countResult.rows[0].count) // Yeni toplam sayı
-        });
+        const [count] = await pool.query(`SELECT COUNT(*) as count FROM Destekler WHERE SorunID = ?`, [id]);
+        res.json({ success: true, isLiked: isLiked, newCount: parseInt(count[0].count) });
 
-    } catch (err) {
-        console.error("Destekleme hatası:", err);
-        res.status(500).json({ message: "İşlem başarısız" });
-    }
+    } catch (err) { next(err); }
 };
 
-// Adminin TÜM sorunları (gizli/açık/onaylı/onaysız) görebilmesi için
-const getAllProblemsForAdmin = async (req, res) => {
+const getAllProblemsForAdmin = async (req, res, next) => {
     try {
-        // Kullanıcı bilgileriyle beraber çekiyoruz
         const query = `
-            SELECT 
-                s.*, 
-                k.AdSoyad, 
-                k.Email,
-                (SELECT COUNT(*) FROM Destekler d WHERE d.SorunID = s.SorunID) AS desteksayisi
-            FROM Sorunlar s
-            JOIN Kullanicilar k ON s.KullaniciID = k.KullaniciID
+            SELECT s.*, k.Ad, k.Soyad, k.Email,
+                (SELECT COUNT(*) FROM Destekler d WHERE d.SorunID = s.SorunID) AS DestekSayisi
+            FROM Sorunlar s JOIN Kullanicilar k ON s.KullaniciID = k.KullaniciID
             ORDER BY s.Tarih DESC
         `;
-        const result = await pool.query(query);
-        const resultfin= result.rows.map(mapUser);
-        res.json(resultfin);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Veri çekilemedi" });
-    }
+        const [rows] = await pool.query(query);
+        res.json(rows.map(mapProblem));
+    } catch (err) { next(err); }
 };
 
-// 7 - LOAD pagede gözüken yer
-const getPublicProblems = async (req, res) => {
+const getPublicProblems = async (req, res, next) => {
     try {
-        // PostgreSQL sütunları küçük harfe çevirir. 
-        // Frontend büyük harf (Latitude) beklediği için AS "Latitude" diyerek zorluyoruz.
-        const query = `
-            SELECT 
-                SorunID as "SorunID", 
-                Baslik as "Baslik", 
-                Aciklama as "Aciklama", 
-                Latitude as "Latitude", 
-                Longitude as "Longitude", 
-                KonumMetni as "KonumMetni", 
-                Durum as "Durum" 
-            FROM Sorunlar 
-            ORDER BY Tarih DESC
-        `;
-        
-        const result = await pool.query(query);
-        res.json(result.rows);
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Veri çekilemedi" });
-    }
+        const [rows] = await pool.query(`SELECT SorunID, Baslik, Aciklama, Latitude, Longitude, KonumMetni, Durum, FotografUrl FROM Sorunlar ORDER BY Tarih DESC`);
+        res.json(rows);
+    } catch (err) { next(err); }
 }
-// 7 Bildirim gösterme
-const getUserNotifications = async (req, res) => {
+
+const getUserNotifications = async (req, res, next) => {
     try {
         const { userId } = req.params;
-
-        // Okunmamış bildirimleri çek
-        const result = await pool.query(
-            'SELECT * FROM Bildirimler WHERE KullaniciID = $1 AND Okundu = FALSE ORDER BY Tarih DESC',
-            [userId]
-        );
-
-        // Eğer bildirim varsa, onları hemen "Okundu" olarak işaretle (Bir daha göstermemek için)
-        if (result.rows.length > 0) {
-            await pool.query(
-                'UPDATE Bildirimler SET Okundu = TRUE WHERE KullaniciID = $1',
-                [userId]
-            );
+        const [rows] = await pool.query('SELECT * FROM Bildirimler WHERE KullaniciID = ? AND Okundu = 0 ORDER BY Tarih DESC', [userId]);
+        
+        if (rows.length > 0) {
+            await pool.query('UPDATE Bildirimler SET Okundu = 1 WHERE KullaniciID = ?', [userId]);
         }
-
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Bildirimler alınamadı" });
-    }
+        res.json(rows);
+    } catch (err) { next(err); }
 };
-module.exports = {
+
+module.exports = { 
     fullProblem,
     userCreateProblem,
     userDeleteProblem,

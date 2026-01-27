@@ -1,33 +1,33 @@
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
-require('dotenv').config();
+const path = require('path');
 
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-//Depolama ayarları
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'kampus_gozu_uploads',
-        allowed_formats: ['jpg', 'png', 'jpeg'], // İzin verilen formatlar
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/') 
     },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname).toLowerCase();
+        cb(null, 'img-' + uniqueSuffix + ext);
+    }
 });
 
-// Sadece Resim Dosyalarını Kabul Et (Güvenlik)
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-        cb(null, true);
+    const allowedTypes = /jpeg|jpg|png|heic|webp/;
+    const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimeType = allowedTypes.test(file.mimetype);
+
+    if (extName && mimeType) {
+        return cb(null, true);
     } else {
-        cb(new Error('Sadece resim dosyaları yüklenebilir!'), false);
+        cb(new Error('Sadece resim dosyaları (jpeg, jpg, png, webp) yüklenebilir!'), false);
     }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const upload = multer({ 
+    storage: storage, 
+    fileFilter: fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5 MB Limit
+});
 
 module.exports = upload;

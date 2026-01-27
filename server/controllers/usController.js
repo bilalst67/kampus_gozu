@@ -2,231 +2,250 @@ const { pool } = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Joi = require('joi');
+const nodemailer = require('nodemailer');
 require("dotenv").config();
 
-// --- VALIDASYON ŞEMASI ---
-const registerSchema = Joi.object({
-    // AD SOYAD: Boşlukları temizle, min 3, max 50 karakter
-    AdSoyad: Joi.string()
-        .trim()
-        .min(3)
-        .max(50)
-        .required()
-        .messages({
-            "string.base": "Ad Soyad metin formatında olmalıdır",
-            "string.empty": "Ad Soyad alanı boş bırakılamaz",
-            "string.min": "Ad Soyad en az 3 karakter olmalıdır",
-            "string.max": "Ad Soyad en fazla 50 karakter olabilir",
-            "any.required": "Ad Soyad alanı zorunludur"
-        }),
-
-    // EMAIL: Geçerli e-posta formatı, lowercase yap, max 100 karakter
-    Email: Joi.string()
-        .email({ tlds: { allow: false } })
-        .trim()
-        .lowercase()
-        .max(100)
-        .required()
-        .messages({
-            "string.email": "Lütfen geçerli bir e-posta adresi giriniz",
-            "string.empty": "E-posta alanı boş bırakılamaz",
-            "any.required": "E-posta alanı zorunludur"
-        }),
-
-    // ŞİFRE: En az 8 karakter, 1 büyük harf, 1 küçük harf, 1 rakam, 1 özel karakter
-    Sifre: Joi.string()
-        .min(8)
-        .max(30)
-        .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*.])"))
-        .required()
-        .messages({
-            "string.min": "Şifre en az 8 karakter olmalıdır",
-            "string.max": "Şifre en fazla 30 karakter olabilir",
-            "string.pattern.base": "Şifre en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter (!@#$%) içermelidir",
-            "string.empty": "Şifre alanı boş bırakılamaz",
-            "any.required": "Şifre alanı zorunludur"
-        })
+// Mail Transport Konfigürasyonu
+const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    secure: true,                  
+    auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false 
+    }
 });
 
-// YARDIMCI: Veri Formatlama
-const mapUser = (user) => {
-    return {
-        KullaniciID: user.kullaniciid,
-        AdSoyad: user.adsoyad,
-        Email: user.email,
-        Rol: user.rol,
-    };
-};
+// Kayıt Validasyon Şeması
+const registerSchema = Joi.object({
+    Ad: Joi.string().trim().min(2).max(50).required(),
+    Soyad: Joi.string().trim().min(2).max(50).required(),
+    KullaniciAdi: Joi.string().trim().min(3).max(30).required(),
+    Email: Joi.string().email({ tlds: { allow: false } }).trim().lowercase().max(100).required(),
+    Sifre: Joi.string().min(8).max(30).pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*.])")).required()
+});
 
-// 1. GET USERS (Tüm Kullanıcıları Listele)
-const getUsers = async (req, res) => {
+const mapUser = (user) => ({
+    KullaniciID: user.KullaniciID,
+    Ad: user.Ad,
+    Soyad: user.Soyad,
+    KullaniciAdi: user.KullaniciAdi,
+    Email: user.Email,
+    Rol: user.Rol,
+});
+
+// === KAYIT İŞLEMİ ===
+const createUser = async (req, res, next) => {
+    let createdEmail = null;
+
     try {
-        const result = await pool.query("SELECT * FROM Kullanicilar ORDER BY KullaniciID ASC");
-        res.json(result.rows.map(mapUser));
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// 2. GET USER BY ID (Tek Kullanıcı - Düzenleme Sayfası İçin)
-const getUserById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const result = await pool.query('SELECT * FROM Kullanicilar WHERE KullaniciID = $1', [id]);
-        if (result.rows.length === 0) return res.json([]);
-        res.json([mapUser(result.rows[0])]);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// 3. Sadece Kullanıcı ID'lerini getiren güvenli fonksiyon
-const getPublicUserList = async (req, res) => {
-    try {
-        const result = await pool.query('SELECT KullaniciID FROM Kullanicilar');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Veri çekilemedi" });
-    }
-}
-
-// 4. CREATE USER (Kayıt Ol)
-const createUser = async (req, res) => {
-    try {
-        // 1. Validasyon (Aynen kalıyor)
-        const { error } = registerSchema.validate(req.body, { 
-            abortEarly: false,
-            stripUnknown: true
-        });
-
+        const { error } = registerSchema.validate(req.body);
         if (error) {
-            const errorMessages = error.details.map(detay => detay.message);
-            return res.status(400).json({ 
-                message: "Validasyon Hatası", 
-                errors: errorMessages 
-            });
+            res.status(400);
+            throw new Error(error.details[0].message);
         }
 
-        const { AdSoyad, Email, Sifre } = req.body;
+        const { Ad, Soyad, KullaniciAdi, Email, Sifre } = req.body;
 
-        // 2. Email Daha Önce Alınmış mı?
-        const userCheck = await pool.query('SELECT * FROM Kullanicilar WHERE Email = $1', [Email]);
-        if (userCheck.rows.length > 0) return res.status(400).json({ message: "Bu email zaten kayıtlı!" });
-
-        // 3. Domain'e Göre Rol Belirleme
+        // Domain Bazlı Rol Ataması
         const domain = Email.split('@')[1].toLowerCase();
-        
-        let userRole = "standart"; // Varsayılan rol (Eğer ikisi de değilse)
+        let userRole = null;
 
         if (domain === "ogr.uludag.edu.tr") {
             userRole = "Öğrenci";
         } else if (domain === "uludag.edu.tr") {
             userRole = "Akademisyen";
+        } else {
+            res.status(403);
+            throw new Error("Sadece Uludağ Üniversitesi kurumsal e-postaları (@uludag.edu.tr veya @ogr.uludag.edu.tr) ile kayıt olabilirsiniz.");
         }
 
-        // 4. Şifre Hashleme
+        const [check] = await pool.query('SELECT * FROM Kullanicilar WHERE Email = ? OR KullaniciAdi = ?', [Email, KullaniciAdi]);
+        if (check.length > 0) {
+            res.status(400);
+            if (check[0].Email === Email) throw new Error("Bu email adresi zaten sistemde kayıtlı.");
+            throw new Error("Bu kullanıcı adı alınmış.");
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashpass = await bcrypt.hash(Sifre, salt);
+        const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // 5. Kayıt İşlemi (SQL Sorgusuna 'Rol' alanını ekledik)
-        const newUser = await pool.query(
-            'INSERT INTO Kullanicilar (AdSoyad, Email, Sifre, Rol) VALUES ($1, $2, $3, $4) RETURNING *',
-            [AdSoyad, Email, hashpass, userRole] 
+        await pool.query(
+            'INSERT INTO Kullanicilar (Ad, Soyad, KullaniciAdi, Email, Sifre, Rol, IsVerified, VerificationToken) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [Ad, Soyad, KullaniciAdi, Email, hashpass, userRole, 0, verificationToken]
         );
-        
-        res.json({ message: "Kayıt Başarılı!", user: mapUser(newUser.rows[0]) });
+
+        createdEmail = Email;
+
+        try {
+            await transporter.sendMail({
+                from: '"Kampüs Gözü Güvenlik" <info@kampusgozu.com>',
+                to: Email,
+                subject: 'Doğrulama Kodunuz - Kampüs Gözü',
+                html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px;">
+                        <h3>Merhaba ${Ad},</h3>
+                        <p>Uludağ Üniversitesi hesabınla aramıza hoş geldin.</p>
+                        <p>Kaydını tamamlamak için aşağıdaki kodu girmen gerekiyor:</p>
+                        <h1 style="color: #d32f2f; letter-spacing: 5px; background-color: #f4f4f4; padding: 10px; display: inline-block;">${verificationToken}</h1>
+                        <p><small>Bu işlemi siz yapmadıysanız, bu maili dikkate almayınız.</small></p>
+                    </div>
+                `
+            });
+        } catch (mailError) {
+            console.error("Mail gönderim hatası:", mailError);
+            // Rollback işlemi
+            await pool.query('DELETE FROM Kullanicilar WHERE Email = ?', [createdEmail]);
+            res.status(500);
+            throw new Error("Doğrulama maili gönderilemedi. Kayıt iptal edildi.");
+        }
+
+        res.status(201).json({ 
+            message: "Kayıt başarılı. Okul e-postanıza doğrulama kodu gönderildi.", 
+            email: Email 
+        });
 
     } catch (error) {
-        console.error("Kayıt Hatası:", error);
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-// 5. LOGIN (Giriş Yap)
-const login = async (req, res) => {
+// === EMAIL DOĞRULAMA ===
+const verifyEmail = async (req, res, next) => {
+    try {
+        const { Email, Code } = req.body;
+        const [rows] = await pool.query('SELECT * FROM Kullanicilar WHERE Email = ?', [Email]);
+        
+        if (rows.length === 0) {
+            res.status(404);
+            throw new Error("Kullanıcı bulunamadı.");
+        }
+        
+        const user = rows[0];
+        if (user.IsVerified === 1) {
+            res.status(400);
+            throw new Error("Bu hesap zaten doğrulanmış.");
+        }
+
+        if (user.VerificationToken !== Code) {
+            res.status(400);
+            throw new Error("Geçersiz doğrulama kodu!");
+        }
+
+        await pool.query('UPDATE Kullanicilar SET IsVerified = 1, VerificationToken = NULL WHERE Email = ?', [Email]);
+        
+        res.json({ message: "Hesap başarıyla doğrulandı." });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// === LOGIN ===
+const login = async (req, res, next) => {
     try {
         const { Email, Sifre } = req.body;
-        const result = await pool.query('SELECT * FROM Kullanicilar WHERE Email = $1', [Email]);
+        const [rows] = await pool.query('SELECT * FROM Kullanicilar WHERE Email = ?', [Email]);
         
-        if (result.rows.length === 0) return res.status(400).json({ message: "Kullanıcı bulunamadı" });
+        if (rows.length === 0) {
+            res.status(400);
+            throw new Error("Kullanıcı bulunamadı.");
+        }
         
-        const user = result.rows[0];
-        const validPassword = await bcrypt.compare(Sifre, user.sifre);
-        if (!validPassword) return res.status(400).json({ message: "Hatalı Şifre" });
+        const user = rows[0];
+
+        if (user.IsVerified === 0) {
+            return res.status(403).json({ 
+                message: "Lütfen önce e-posta adresinizi doğrulayın.", 
+                notVerified: true, 
+                email: user.Email 
+            });
+        }
+
+        const validPassword = await bcrypt.compare(Sifre, user.Sifre);
+        if (!validPassword) {
+            res.status(400);
+            throw new Error("Hatalı şifre.");
+        }
 
         const token = jwt.sign(
-            { id: user.kullaniciid, email: user.email, role: user.rol }, 
+            { id: user.KullaniciID, email: user.Email, role: user.Rol }, 
             process.env.JWT_SECRET, 
-            { expiresIn: '1h' }
+            { expiresIn: '2h' }
         );
 
         res.json({ message: "Giriş Başarılı", token, user: mapUser(user) });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-// 6. UPDATE USER (Güncelle)
-const updateUser = async (req, res) => {
+// Yardımcı Fonksiyonlar
+const getPublicUserList = async (req, res, next) => {
+    try {
+        const [rows] = await pool.query('SELECT KullaniciID FROM Kullanicilar');
+        res.json(rows);
+    } catch (err) { next(err); }
+}
+
+const getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { AdSoyad, Email, Sifre } = req.body;
-        
-        const salt = await bcrypt.genSalt(10);
-        const hashpass = await bcrypt.hash(Sifre, salt);
-
-        await pool.query(
-            'UPDATE Kullanicilar SET AdSoyad=$1, Email=$2, Sifre=$3 WHERE KullaniciID=$4',
-            [AdSoyad, Email, hashpass, id]
-        );
-        res.json({ message: "Güncelleme Başarılı" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+        const [rows] = await pool.query('SELECT * FROM Kullanicilar WHERE KullaniciID = ?', [id]);
+        if (rows.length === 0) return res.json([]);
+        res.json([mapUser(rows[0])]);
+    } catch (error) { next(error); }
 };
 
-// 7. DELETE USER (Kullanıcı Hesabını Sil)
-const deleteUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const requesterId = req.user.id;
-
-        // --- GÜVENLİK KONTROLÜ ---
-        // Eğer URL'deki ID ile Token'daki ID eşleşmiyorsa işlemi durdur.
-        // (parseInt kullanıyoruz çünkü params string gelir, token number olabilir)
         if (parseInt(id) !== parseInt(requesterId)) {
-            return res.status(403).json({ 
-                message: "Yetkisiz işlem! Sadece kendi hesabınızı silebilirsiniz." 
-            });
+            res.status(403);
+            throw new Error("Sadece kendi profilinizi güncelleyebilirsiniz.");
         }
 
-        // 3. Silme İşlemi
-        const result = await pool.query(
-            'DELETE FROM Kullanicilar WHERE KullaniciID=$1 RETURNING *', 
-            [id]
-        );
+        const { Ad, Soyad, KullaniciAdi, Email, Sifre } = req.body;
 
-        // Eğer silinecek kullanıcı zaten yoksa
-        if (result.rowCount === 0) {
-            return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+        if (Sifre) {
+            const salt = await bcrypt.genSalt(10);
+            const hashpass = await bcrypt.hash(Sifre, salt);
+            await pool.query(
+                'UPDATE Kullanicilar SET Ad=?, Soyad=?, KullaniciAdi=?, Email=?, Sifre=? WHERE KullaniciID=?', 
+                [Ad, Soyad, KullaniciAdi, Email, hashpass, id]
+            );
+        } else {
+            await pool.query(
+                'UPDATE Kullanicilar SET Ad=?, Soyad=?, KullaniciAdi=?, Email=? WHERE KullaniciID=?', 
+                [Ad, Soyad, KullaniciAdi, Email, id]
+            );
         }
+        
+        res.json({ message: "Güncelleme Başarılı." });
+    } catch (error) { next(error); }
+};
 
+const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const requesterId = req.user.id;
+        
+        if (parseInt(id) !== parseInt(requesterId)) {
+            res.status(403);
+            throw new Error("Yetkisiz işlem.");
+        }
+        
+        const [result] = await pool.query('DELETE FROM Kullanicilar WHERE KullaniciID = ?', [id]);
+        if (result.affectedRows === 0) {
+            res.status(404);
+            throw new Error("Kullanıcı bulunamadı.");
+        }
         res.json({ message: "Hesabınız başarıyla silindi." });
-
-    } catch (error) {
-        console.error("Silme Hatası:", error);
-        res.status(500).json({ message: "Sunucu hatası oluştu." });
-    }
+    } catch (error) { next(error); }
 };
 
-// HEPSİNİ DIŞARI AKTAR
-module.exports = {
-    getUsers,
-    getUserById,
-    getPublicUserList,
-    createUser,
-    login,
-    updateUser,
-    deleteUser,
-};
+module.exports = { createUser, verifyEmail, login, getUserById, getPublicUserList, updateUser, deleteUser };

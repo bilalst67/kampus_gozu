@@ -1,6 +1,6 @@
 /* --- GENEL --- */
 .feed-container {
-    background-color: #eef2f6; /* BEYAZ DEĞİL, yumuşak gri-mavi zemin */
+    background-color: #eef2f6;
     min-height: 100vh;
     font-family: 'Segoe UI', 'Helvetica Neue', sans-serif; 
 }
@@ -15,11 +15,11 @@
     max-width: 600px;
     height: 65px;
     
-    background: rgba(20, 56, 127, 0.95); /* Daha opak lacivert */
+    background: rgba(20, 56, 127, 0.95);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Daha güçlü gölge */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     
     display: flex;
@@ -28,7 +28,6 @@
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Scroll Edilince */
 .floating-navbar.scrolled {
     width: auto;
     left: auto;
@@ -36,7 +35,7 @@
     transform: none;
     border-radius: 30px;
     padding: 0 10px;
-    background: #14387f; /* Tam renk */
+    background: #14387f;
     box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
@@ -60,10 +59,7 @@
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.nav-actions {
-    display: flex;
-    gap: 12px;
-}
+.nav-actions { display: flex; gap: 12px; }
 
 /* Navbar Butonları */
 .icon-btn {
@@ -107,29 +103,23 @@
     width: 100%;
     max-width: 550px;
     border-radius: 24px;
-    /* Kartın zeminden ayrılması için daha iyi gölge */
     box-shadow: 0 10px 25px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02);
     margin-bottom: 30px;
     overflow: hidden;
     transition: transform 0.2s;
-    border: 1px solid rgba(255,255,255,0.5); /* Hafif border */
+    border: 1px solid rgba(255,255,255,0.5);
 }
 
-/* Header */
 .card-header {
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff; /* Header beyaz kalsın */
-    border-bottom: 1px solid #f0f0f0; /* Hafif ayrım çizgisi */
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.user-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+.user-section { display: flex; align-items: center; gap: 12px; }
 
 .modern-avatar {
     width: 44px;
@@ -149,7 +139,6 @@
 .username { font-weight: 700; font-size: 1.05rem; color: #111; }
 .location { font-size: 0.85rem; color: #777; font-weight: 500;}
 
-/* Rozetler */
 .modern-badge {
     padding: 6px 14px;
     border-radius: 20px;
@@ -161,7 +150,6 @@
 .modern-badge.pending { background-color: #fff8e1; color: #f57c00; border: 1px solid #ffe0b2;}
 .modern-badge.success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;}
 
-/* Görsel */
 .card-media {
     width: 100%;
     background-color: #f8f9fa;
@@ -177,7 +165,6 @@
     object-fit: cover;
 }
 
-/* Alt Kısım */
 .card-body { padding: 20px; background-color: #fff; }
 
 .action-row {
@@ -212,7 +199,7 @@
 .post-desc { color: #333; line-height: 1.6; font-size: 1rem; margin-bottom: 10px;}
 .post-time { font-size: 0.8rem; color: #aaa; text-transform: uppercase; font-weight: 600; }
 
-/* Loading */
+/* Loading State */
 .feed-loading {
     height: 100vh;
     display: flex;
@@ -233,7 +220,7 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* MOBİL İÇİN DÜZELTMELER */
+/* Mobile Optimization */
 @media (max-width: 480px) {
     .floating-navbar { width: 94%; top: 15px; }
     .brand-logo { font-size: 1.2rem; }
